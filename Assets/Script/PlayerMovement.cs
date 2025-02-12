@@ -25,6 +25,7 @@ public class CompletePlayerController : MonoBehaviour
     [SerializeField] private Transform playerCamera;
     [SerializeField] private Transform gunTip;
     [SerializeField] private LineRenderer swingLine;
+    private float mouseSensitivity;
 
     private Rigidbody rb;
     private SpringJoint swingJoint;
@@ -40,6 +41,7 @@ public class CompletePlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         swingLine.positionCount = 0;
+        mouseSensitivity = gameObject.GetComponentInChildren<CameraController>().mouseSensitivity;
     }
 
     private void Update()
@@ -79,7 +81,7 @@ public class CompletePlayerController : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        orientation.rotation = Quaternion.Euler(0f, yRotation += mouseX, 0f);
+        orientation.rotation = Quaternion.Euler(0f, yRotation += mouseX * mouseSensitivity, 0f);
     }
 
     private void HandleMovement()
