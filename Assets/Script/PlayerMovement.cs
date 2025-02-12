@@ -79,12 +79,6 @@ public class CompletePlayerController : MonoBehaviour
     private void HandleMouseLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * 100f;
-        float mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * 100f;
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         orientation.rotation = Quaternion.Euler(0f, yRotation += mouseX * mouseSensitivity, 0f);
     }
 
