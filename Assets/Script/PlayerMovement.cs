@@ -4,21 +4,20 @@ using UnityEngine;
 public class CompletePlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] private float walkSpeed = 7f;
-    [SerializeField] private float sprintSpeed = 12f;
-    [SerializeField] private float groundAcceleration = 15f;
-    [SerializeField] private float airAcceleration = 5f;
-    [SerializeField] private float friction = 8f;
-    [SerializeField] private float jumpForce = 8f;
-    [SerializeField] private float gravity = 24f;
-    [SerializeField] private float airControl = 0.3f;
+    [SerializeField] private float walkSpeed;
+    [SerializeField] private float groundAcceleration;
+    [SerializeField] private float airAcceleration;
+    [SerializeField] private float friction;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float gravity;
+    [SerializeField] private float airControl;
 
     [Header("Swinging Settings")]
-    [SerializeField] private float maxSwingDistance = 25f;
-    [SerializeField] private float springForce = 4.5f;
-    [SerializeField] private float damperForce = 7f;
-    [SerializeField] private float horizontalThrustForce = 200f;
-    [SerializeField] private float forwardThrustForce = 200f;
+    [SerializeField] private float maxSwingDistance;
+    [SerializeField] private float springForce;
+    [SerializeField] private float damperForce;
+    [SerializeField] private float horizontalThrustForce;
+    [SerializeField] private float forwardThrustForce;
     [SerializeField] private LayerMask swingMask;
 
     [Header("References")]
@@ -66,6 +65,7 @@ public class CompletePlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
+        print(isGrounded);
         DrawSwingRope();
     }
 
@@ -209,7 +209,7 @@ public class CompletePlayerController : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.05f);
     }
 
     private void HandleJump()

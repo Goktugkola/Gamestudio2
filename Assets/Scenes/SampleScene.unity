@@ -2403,14 +2403,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2862abd7cbd351419bd9b2ce3922d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 2
-  sprintSpeed: 12
-  groundAcceleration: 2
-  airAcceleration: 2
-  friction: 8
-  jumpForce: 8
-  gravity: 24
-  airControl: 0.3
+  walkSpeed: 500
+  groundAcceleration: 20
+  airAcceleration: 40
+  friction: 15
+  jumpForce: 16
+  gravity: 15
+  airControl: 400
   maxSwingDistance: 25
   springForce: 4.5
   damperForce: 2
@@ -2465,8 +2464,6 @@ MonoBehaviour:
   mouseSensitivity: 100
   playerCamera: {fileID: 959960761}
   orientation: {fileID: 635428899}
-  moveSpeed: 7
-  jumpForce: 8
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
