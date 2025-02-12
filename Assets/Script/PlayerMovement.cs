@@ -13,18 +13,22 @@ public class CompletePlayerController : MonoBehaviour
     [SerializeField] private float airControl;
 
     [Header("Swinging Settings")]
-    [SerializeField] private float maxSwingDistance;
-    [SerializeField] private float springForce;
-    [SerializeField] private float damperForce;
-    [SerializeField] private float horizontalThrustForce;
-    [SerializeField] private float forwardThrustForce;
+    [SerializeField] private float maxSwingDistance = 25f;
+    [SerializeField] private float minSwingDistance = 3f;  // Minimum distance to consider
+    [SerializeField] private float sphereCastRadius = 1.5f; // Radius for sphere casting
+    [SerializeField] private float springForce = 4.5f;
+    [SerializeField] private float damperForce = 7f;
+    [SerializeField] private float horizontalThrustForce = 200f;
+    [SerializeField] private float forwardThrustForce = 200f;
     [SerializeField] private LayerMask swingMask;
+
 
     [Header("References")]
     [SerializeField] private Transform orientation;
     [SerializeField] private Transform playerCamera;
     [SerializeField] private Transform gunTip;
     [SerializeField] private LineRenderer swingLine;
+    private float mouseSensitivity;
 
     private Rigidbody rb;
     private SpringJoint swingJoint;
@@ -40,6 +44,7 @@ public class CompletePlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         swingLine.positionCount = 0;
+        mouseSensitivity = gameObject.GetComponentInChildren<CameraController>().mouseSensitivity;
     }
 
     private void Update()
@@ -48,6 +53,7 @@ public class CompletePlayerController : MonoBehaviour
         HandleJump();
         GroundCheck();
         HandleSwingInput();
+
     }
 
     private void FixedUpdate()
@@ -79,7 +85,7 @@ public class CompletePlayerController : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        orientation.rotation = Quaternion.Euler(0f, yRotation += mouseX, 0f);
+        orientation.rotation = Quaternion.Euler(0f, yRotation += mouseX * mouseSensitivity, 0f);
     }
 
     private void HandleMovement()
@@ -109,7 +115,36 @@ public class CompletePlayerController : MonoBehaviour
 
     private void StartSwing()
     {
-        if (Physics.SphereCast(playerCamera.position,1f, playerCamera.forward, out RaycastHit hit, maxSwingDistance, swingMask))
+        RaycastHit hit;
+        bool validSwingPointFound = false;
+        Vector3 cameraPos = playerCamera.position;
+        Vector3 cameraForward = playerCamera.forward;
+
+        // First try raycast
+        if (Physics.Raycast(cameraPos, cameraForward, out hit, maxSwingDistance, swingMask))
+        {
+            // Check if the hit point is beyond minimum distance
+            if (Vector3.Distance(transform.position, hit.point) > minSwingDistance)
+            {
+                validSwingPointFound = true;
+            }
+        }
+
+        // If raycast failed, try spherecast
+        if (!validSwingPointFound)
+        {
+            if (Physics.SphereCast(cameraPos, sphereCastRadius, cameraForward, 
+                out hit, maxSwingDistance, swingMask))
+            {
+                // Verify spherecast hit distance
+                if (Vector3.Distance(transform.position, hit.point) > minSwingDistance)
+                {
+                    validSwingPointFound = true;
+                }
+            }
+        }
+
+        if (validSwingPointFound)
         {
             isSwinging = true;
             swingPoint = hit.point;
@@ -130,6 +165,7 @@ public class CompletePlayerController : MonoBehaviour
         }
     }
 
+
     private void StopSwing()
     {
         isSwinging = false;
@@ -147,10 +183,10 @@ public class CompletePlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W)) rb.AddForce(orientation.forward * forwardThrustForce * Time.deltaTime);
 
         // Shorten cable
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.S))
         {
             Vector3 directionToPoint = swingPoint - transform.position;
-            rb.AddForce(directionToPoint.normalized * forwardThrustForce * Time.deltaTime);
+            rb.AddForce(-directionToPoint.normalized * forwardThrustForce * Time.deltaTime);
             
             float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
             swingJoint.maxDistance = distanceFromPoint * 0.8f;
