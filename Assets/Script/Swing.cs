@@ -13,6 +13,7 @@ public class Swing : MonoBehaviour
     [SerializeField] private float maxSwingDistance = 25f;
     [SerializeField] private float minSwingDistance = 3f;  // Minimum distance to consider
     [SerializeField] private float sphereCastRadius = 1.5f; // Radius for sphere casting
+    [SerializeField] private float smallsphereCastRadius = 0.5f; // Radius for sphere casting
     [SerializeField] private float springForce = 4.5f;
     [SerializeField] private float damperForce = 7f;
     [SerializeField] private float horizontalThrustForce = 200f;
@@ -51,7 +52,7 @@ public class Swing : MonoBehaviour
         Vector3 cameraForward = playerCam.forward;
 
         // First try raycast
-        if (Physics.Raycast(cameraPos, cameraForward, out hit, maxSwingDistance, swingMask))
+        if (Physics.SphereCast(cameraPos, smallsphereCastRadius ,cameraForward, out hit, maxSwingDistance, swingMask))
         {
             // Check if the hit point is beyond minimum distance
             if (Vector3.Distance(transform.position, hit.point) > minSwingDistance)
@@ -103,7 +104,7 @@ public class Swing : MonoBehaviour
         if (isSwinging == true)
         {
             Vector3 directionToPoint = swingPoint - player.transform.position;
-            if (Vector3.Dot(rb.linearVelocity.normalized, directionToPoint.normalized) > 0.8f) // Adjust the threshold as needed
+            if (Vector3.Dot(rb.linearVelocity.normalized, directionToPoint.normalized) > 0.8f || player.position.y > swingJoint.transform.position.y) // Adjust the threshold as needed
             {
                 print("Swing direction and player's velocity direction are the same");
                 swingJoint.damper = 0f;

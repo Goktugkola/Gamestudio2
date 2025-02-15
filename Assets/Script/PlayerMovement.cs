@@ -58,7 +58,11 @@ public class PlayerMovement : MonoBehaviour
         {
             State = MovementState.running;
         }
-        if(!grounded && !jumping && !dashing && !crouching && State != MovementState.Swinging)
+        if(!grounded && !jumping && !dashing && !crouching && State != MovementState.Swinging && Input.GetMouseButton(0))
+        {
+            State = MovementState.Swinging;
+        }
+        if(!grounded && State == MovementState.Swinging && !Input.GetMouseButton(0))
         {
             State = MovementState.falling;
         }
