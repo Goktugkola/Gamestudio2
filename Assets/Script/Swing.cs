@@ -20,6 +20,7 @@ public class Swing : MonoBehaviour
     [SerializeField] private float forwardThrustForce = 200f;
     [SerializeField] private LayerMask swingMask;
     [SerializeField] private float extendCableSpeed = 0.5f;
+    [SerializeField] private float grappleMultiplier = 20f;
     private bool isSwinging;
     private SpringJoint swingJoint;
     private Vector3 swingPoint;
@@ -43,6 +44,8 @@ public class Swing : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) { StartSwing(); if (player.gameObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.Swinging) OdmGearMovement(); }
         if (Input.GetMouseButtonUp(0)) StopSwing();
+        if (Input.GetMouseButtonDown(1)){StartSwing();}
+        if (Input.GetMouseButtonUp(1)) StopSwing();
     }
     private void StartSwing()
     {
@@ -52,7 +55,7 @@ public class Swing : MonoBehaviour
         Vector3 cameraForward = playerCam.forward;
 
         // First try raycast
-        if (Physics.SphereCast(cameraPos, smallsphereCastRadius ,cameraForward, out hit, maxSwingDistance, swingMask))
+        if (Physics.SphereCast(cameraPos, smallsphereCastRadius, cameraForward, out hit, maxSwingDistance, swingMask))
         {
             // Check if the hit point is beyond minimum distance
             if (Vector3.Distance(transform.position, hit.point) > minSwingDistance)
@@ -110,10 +113,17 @@ public class Swing : MonoBehaviour
                 swingJoint.damper = 0f;
 
             }
-            else
+            else if(player.gameObject.GetComponent<PlayerMovement>().State != PlayerMovement.MovementState.Grappling)
             {
                 print("Swing direction and player's velocity direction are not the same");
                 swingJoint.damper = damperForce;
+            }
+            if (player.gameObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.Grappling)
+            {
+                print("Grapple mode");
+                swingJoint.damper = 0;
+                swingJoint.spring = springForce * grappleMultiplier;
+                swingJoint.minDistance = 0;
             }
         }
     }

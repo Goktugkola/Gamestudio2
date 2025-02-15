@@ -2831,6 +2831,7 @@ MonoBehaviour:
   maxSwingDistance: 25
   minSwingDistance: 3
   sphereCastRadius: 1.5
+  smallsphereCastRadius: 0.5
   springForce: 4.5
   damperForce: 7
   horizontalThrustForce: 200
@@ -2838,6 +2839,8 @@ MonoBehaviour:
   swingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  extendCableSpeed: 0.5
+  grappleMultiplier: 5
 --- !u!1 &1849054986
 GameObject:
   m_ObjectHideFlags: 0
