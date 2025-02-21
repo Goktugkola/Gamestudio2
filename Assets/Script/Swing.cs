@@ -24,7 +24,7 @@ public class Swing : MonoBehaviour
     private bool isSwinging;
     private SpringJoint swingJoint;
     private Vector3 swingPoint;
-
+    public int currentWeaponid = 0;
     private void Awake()
     {
         swingLine.positionCount = 0;

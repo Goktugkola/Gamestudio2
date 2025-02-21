@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Camv2 : MonoBehaviour
+public class CamFollow : MonoBehaviour
 {
     public Transform player;
 
