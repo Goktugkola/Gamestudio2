@@ -41,9 +41,13 @@ public class Swing : MonoBehaviour
     private void LateUpdate()
     {
         HandleSwingInput();
-        if(swingJoint != null)
+        if (swingJoint != null)
         {
-            DrawSwingRope();
+            if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+            {
+                DrawSwingRope();
+
+            }
         }
     }
 

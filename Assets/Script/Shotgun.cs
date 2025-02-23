@@ -6,10 +6,15 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private float KnockbackForce = 20f;
     [SerializeField] private float fireCooldown = 0.5f;
     [SerializeField] private int bulletCount = 5;
+    [SerializeField] private int maxBulletCount = 5;
     [SerializeField] private GameObject playerObject;
     public void Update()
     {
         HandleInput();
+        if(playerObject.GetComponent<PlayerMovement>().grounded)
+        {
+            bulletCount = maxBulletCount;
+        }
     }
     public void HandleInput()
     {
