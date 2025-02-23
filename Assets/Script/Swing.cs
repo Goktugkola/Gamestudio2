@@ -107,7 +107,7 @@ public class Swing : MonoBehaviour
         if (isSwinging == true)
         {
             Vector3 directionToPoint = swingPoint - player.transform.position;
-            if (Vector3.Dot(rb.linearVelocity.normalized, directionToPoint.normalized) > 0.8f || player.position.y > swingJoint.transform.position.y) // Adjust the threshold as needed
+            if (Vector3.Dot(rb.linearVelocity.normalized, directionToPoint.normalized) > 0.7f || player.position.y > swingJoint.transform.position.y) // Adjust the threshold as needed
             {
                 print("Swing direction and player's velocity direction are the same");
                 swingJoint.damper = 0f;

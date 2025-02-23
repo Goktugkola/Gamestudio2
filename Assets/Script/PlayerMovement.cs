@@ -117,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
         if (jumping)
         {
             HorizontalMultiplier = 0.5f;
-            VerticalMultiplier = 0.5f;
+            VerticalMultiplier = 0.3f;
         }
         // Movement while sliding
         if (grounded && crouching) VerticalMultiplier = 0f;
