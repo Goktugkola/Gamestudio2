@@ -10,8 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     [Header("Movement Settings")]
     [SerializeField] private float xRotation;
-    [SerializeField] private float sensitivity = 50f;
-    [SerializeField] private float sensMultiplier = 1f;
+
     [SerializeField] private float moveSpeed = 4500;
     [SerializeField] private float maxSpeed = 20;
     public float counterMovement = 0.175f;
@@ -68,7 +67,8 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        Look();
+        xRotation = playerCam.GetComponent<CamFollow>().xRotation;
+        
     }
 
     private void HandleInput()
@@ -153,24 +153,8 @@ public class PlayerMovement : MonoBehaviour
         readyToJump = true;
     }
 
-    private float desiredX;
-    private void Look()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
 
-        //Find current look rotation
-        Vector3 rot = playerCam.transform.localRotation.eulerAngles;
-        desiredX = rot.y + mouseX;
 
-        //Rotate, and also make sure we dont over- or under-rotate.
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        //Perform the rotations
-        playerCam.transform.localRotation = Quaternion.Euler(xRotation, desiredX, 0);
-        orientation.transform.localRotation = Quaternion.Euler(0, desiredX, 0);
-    }
     public Vector2 FindVelRelativeToLook()
     {
         float lookAngle = orientation.transform.eulerAngles.y;
