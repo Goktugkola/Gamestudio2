@@ -36,20 +36,40 @@ public class Swing : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        
+
     }
     private void LateUpdate()
     {
         HandleSwingInput();
-        DrawSwingRope();
+        if(swingJoint != null)
+        {
+            DrawSwingRope();
+        }
     }
 
     private void HandleSwingInput()
     {
-        if (Input.GetMouseButtonDown(0)) { StartSwing(); if (player.gameObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.Swinging) OdmGearMovement(); }
-        if (Input.GetMouseButtonUp(0)) StopSwing();
-        if (Input.GetMouseButtonDown(1)){StartSwing();}
-        if (Input.GetMouseButtonUp(1)) StopSwing();
+        if (Input.GetMouseButtonDown(0))
+        {
+            StartSwing();
+            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Swinging;
+            OdmGearMovement();
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            StopSwing();
+            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            StartSwing();
+            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Grappling;
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            StopSwing();
+            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
+        }
     }
     private void StartSwing()
     {
@@ -87,10 +107,6 @@ public class Swing : MonoBehaviour
             isSwinging = true;
             swingPoint = hit.point;
             swingJoint = player.gameObject.AddComponent<SpringJoint>();
-            if (player.gameObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.falling)
-            {
-                player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Swinging;
-            }
 
             swingJoint.autoConfigureConnectedAnchor = false;
             swingJoint.connectedAnchor = swingPoint;
@@ -108,7 +124,7 @@ public class Swing : MonoBehaviour
     }
     public void HandleLength()
     {
-        if (isSwinging == true)
+        if (isSwinging == true && swingJoint != null)
         {
             Vector3 directionToPoint = swingPoint - player.transform.position;
             if (Vector3.Dot(rb.linearVelocity.normalized, directionToPoint.normalized) > 0.7f || player.position.y > swingJoint.transform.position.y) // Adjust the threshold as needed
@@ -117,7 +133,7 @@ public class Swing : MonoBehaviour
                 swingJoint.damper = 0f;
 
             }
-            else if(player.gameObject.GetComponent<PlayerMovement>().State != PlayerMovement.MovementState.Grappling)
+            else if (player.gameObject.GetComponent<PlayerMovement>().State != PlayerMovement.MovementState.Grappling)
             {
                 print("Swing direction and player's velocity direction are not the same");
                 swingJoint.damper = damperForce;
