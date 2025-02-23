@@ -2922,8 +2922,8 @@ MonoBehaviour:
   xRotation: 0
   sensitivity: 50
   sensMultiplier: 1
-  moveSpeed: 4500
-  maxSpeed: 20
+  moveSpeed: 2250
+  maxSpeed: 15
   counterMovement: 0.175
   maxSlopeAngle: 35
   grounded: 0
@@ -2931,7 +2931,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  jumpForce: 550
+  jumpForce: 400
   groundCheck: {fileID: 904707005}
   groundCheckRadius: 0.2
   slideForce: 400
