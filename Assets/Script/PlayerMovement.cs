@@ -112,19 +112,22 @@ public class PlayerMovement : MonoBehaviour
         if (HorizontalInput < 0 && xMag < -maxSpeed) HorizontalInput = 0;
         if (VerticalInput > 0 && yMag > maxSpeed) VerticalInput = 0;
         if (VerticalInput < 0 && yMag < -maxSpeed) VerticalInput = 0;
-
-        float HorizontalMultiplier = 1f, VerticalMultiplier = 1f;
-        if (jumping)
+        if (grounded)
         {
-            HorizontalMultiplier = 0.5f;
-            VerticalMultiplier = 0.3f;
+            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime  );
+            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime );
         }
-        // Movement while sliding
-        if (grounded && crouching) VerticalMultiplier = 0f;
+        if(!grounded)
+        {
+            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime /10);
+            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime /10);
+        }
+        if(!grounded && State == MovementState.Swinging)
+        {
+            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime / 2);
+            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime / 2);
+        }
 
-
-        rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime * HorizontalMultiplier * VerticalMultiplier);
-        rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime * VerticalMultiplier);
     }
 
     private void ApplyGravity()

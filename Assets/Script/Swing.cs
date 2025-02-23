@@ -32,11 +32,15 @@ public class Swing : MonoBehaviour
     }
     private void Update()
     {
-        HandleSwingInput();
         HandleLength();
+    }
+    private void FixedUpdate()
+    {
+        
     }
     private void LateUpdate()
     {
+        HandleSwingInput();
         DrawSwingRope();
     }
 
