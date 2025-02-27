@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float moveSpeed = 4500;
     [SerializeField] private float maxSpeed = 20;
+    [SerializeField] private float aircontrol = 1f;
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
     public float maxSlopeAngle = 35f;
@@ -106,8 +107,8 @@ public class PlayerMovement : MonoBehaviour
         }
         if(!grounded)
         {
-            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime /10);
-            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime /10);
+            rb.AddForce(orientation.transform.forward * VerticalInput* aircontrol * moveSpeed * Time.deltaTime /10);
+            rb.AddForce(orientation.transform.right * HorizontalInput* aircontrol * moveSpeed * Time.deltaTime /10);
         }
         if(!grounded && State == MovementState.Swinging)
         {

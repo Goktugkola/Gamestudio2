@@ -18,6 +18,8 @@ public class Swing : MonoBehaviour
     [SerializeField] private float damperForce = 7f;
     [SerializeField] private float horizontalThrustForce = 200f;
     [SerializeField] private float forwardThrustForce = 200f;
+    [SerializeField] private KeyCode fireKey = KeyCode.Mouse0;
+
     [SerializeField] private LayerMask swingMask;
     [SerializeField] private float extendCableSpeed = 0.5f;
     [SerializeField] private float grappleMultiplier = 20f;
@@ -53,18 +55,18 @@ public class Swing : MonoBehaviour
 
     private void HandleSwingInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(fireKey))
         {
             StartSwing();
             player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Swinging;
             OdmGearMovement();
         }
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetKeyUp(fireKey))
         {
             StopSwing();
             player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
         }
-        if (Input.GetMouseButtonDown(1))
+        /*/if (Input.GetMouseButtonDown(1))
         {
             StartSwing();
             player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Grappling;
@@ -73,7 +75,7 @@ public class Swing : MonoBehaviour
         {
             StopSwing();
             player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
-        }
+        }/*/
     }
     private void StartSwing()
     {

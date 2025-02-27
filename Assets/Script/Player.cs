@@ -15,14 +15,10 @@ public class Player : MonoBehaviour
     public string currentWeapon;
     private void Start()
     {
-        currentWeaponid = weaponDictionary["SwingGun"];
-        currentWeapon = "SwingGun";
-        ShotGun.SetActive(false);
-        SwingGun.SetActive(true);
     }
     private void Update()
     {
-        HandleWeaponSwitch();
+        //HandleWeaponSwitch();
     }
     private void HandleWeaponSwitch()
     {
