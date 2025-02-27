@@ -1,4 +1,5 @@
 using System.Collections;
+using NUnit.Framework;
 using UnityEngine;
 
 public class Shotgun : MonoBehaviour
@@ -13,7 +14,9 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private LayerMask targetLayers;
     [SerializeField] private float sphereRadius = 0.5f;
     [SerializeField] private Vector3 direction;
+    [SerializeField] private Camera playerCamera;
     [SerializeField] private KeyCode fireKey = KeyCode.Mouse1;
+
     public void Update()
     {
         HandleInput();
@@ -34,18 +37,21 @@ public class Shotgun : MonoBehaviour
     {
         if (bulletCount > 0)
         {
-            RaycastHit[] hits = Physics.SphereCastAll(
-            origin: origin,
-            radius: sphereRadius,
-            direction: gameObject.transform.forward,
-            maxDistance: maxDistance,
-            layerMask: targetLayers,
-            queryTriggerInteraction: QueryTriggerInteraction.Ignore
-        );
+        Vector3 origin = playerCamera.transform.position;
+        Vector3 direction = playerCamera.transform.forward;
+        
+        RaycastHit[] hits = Physics.SphereCastAll(origin, sphereRadius, direction, maxDistance, targetLayers, QueryTriggerInteraction.Ignore);
+
+
             for (int i =0; i < hits.Length; i++)
             {
+                if(hits[i].collider.gameObject.layer == 2)
+                {
+                    continue;
+                }
                 print(hits[i].collider.gameObject.name);
                 Destroy(hits[i].collider.gameObject);
+                Debug.DrawLine(origin, hits[i].point, Color.green, 2.0f);
                 Debug.DrawRay(hits[i].point, hits[i].normal * 2, Color.red, 2.0f);
             }
             
@@ -63,6 +69,5 @@ public class Shotgun : MonoBehaviour
         }
         
     }
-
 }
 
