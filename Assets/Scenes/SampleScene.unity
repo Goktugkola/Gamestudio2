@@ -2404,9 +2404,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerObject: {fileID: 1288438724}
   orientation: {fileID: 635428899}
-  positionMultiplierH: 0
-  positionMultiplierV: 0
-  jumpForce: 10
+  positionMultiplierH: 0.65
+  positionMultiplierV: 0.85
+  jumpForce: 12
   ledgeDistance: 1.5
   ledgeCollider: {fileID: 1749656680}
 --- !u!1 &1385143727
