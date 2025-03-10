@@ -9,19 +9,22 @@ public class PlayerMovement : MonoBehaviour
     public Transform orientation;
     private Rigidbody rb;
     [Header("Movement Settings")]
-    [SerializeField] private float xRotation;
-
     [SerializeField] private float moveSpeed = 4500;
-    [SerializeField] private float maxSpeed = 20;
+    [SerializeField] public float maxSpeed = 20;
+    [SerializeField] private float jumpForce = 550f;
+
     [SerializeField] private float aircontrol = 1f;
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
     public float maxSlopeAngle = 35f;
     public bool grounded;
     public int gravityMultiplier = 25;
-    public LayerMask whatIsGround;
-    [SerializeField] private float jumpForce = 550f;
+    [Header("Swinging Settings")]
+    public float swingControl = 10f;
+    [SerializeField] private float extraMomentum = 1.5f;
+
     [Header("For Ground Check")]
+    public LayerMask whatIsGround;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
     private bool jumping, dashing, crouching = false;
@@ -42,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
         Dashing,
         falling,
         Grappling,
+        WallRunning,
         Crouching,
         Swinging
     }
@@ -51,15 +55,12 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (State != MovementState.Swinging)
-        {
-            HandleMovement();
-        }
+        HandleMovement();
         if (grounded && !jumping && !dashing && !crouching)
         {
             State = MovementState.running;
         }
-        if (!grounded && !Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+        if (!grounded && !Input.GetMouseButton(0) && !Input.GetMouseButton(1) && !dashing && State != MovementState.WallRunning)
         {
             State = MovementState.falling;
         }
@@ -68,8 +69,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        xRotation = playerCam.GetComponent<CamFollow>().xRotation;
-        
+
     }
 
     private void HandleInput()
@@ -83,7 +83,10 @@ public class PlayerMovement : MonoBehaviour
     {
 
         // Apply extra gravity
-        ApplyGravity();
+        if (!grounded && State != MovementState.WallRunning)
+        {
+            ApplyGravity();
+        }
 
         Vector2 mag = FindVelRelativeToLook();
         float xMag = mag.x, yMag = mag.y;
@@ -102,18 +105,19 @@ public class PlayerMovement : MonoBehaviour
         if (VerticalInput < 0 && yMag < -maxSpeed) VerticalInput = 0;
         if (grounded)
         {
-            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime  );
-            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime );
+            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime);
+            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime);
         }
-        if(!grounded)
+        else if (State == MovementState.falling)
         {
-            rb.AddForce(orientation.transform.forward * VerticalInput* aircontrol * moveSpeed * Time.deltaTime /10);
-            rb.AddForce(orientation.transform.right * HorizontalInput* aircontrol * moveSpeed * Time.deltaTime /10);
+            rb.AddForce(orientation.transform.forward * VerticalInput * aircontrol * moveSpeed * Time.deltaTime / 10);
+            rb.AddForce(orientation.transform.right * HorizontalInput * aircontrol * moveSpeed * Time.deltaTime / 10);
         }
-        if(!grounded && State == MovementState.Swinging)
+        else if (State == MovementState.Swinging)
         {
-            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime / 2);
-            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime / 2);
+            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * swingControl * extraMomentum * Time.deltaTime / 100);
+            print("Swinging");
+            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * swingControl * Time.deltaTime / 100);
         }
 
     }

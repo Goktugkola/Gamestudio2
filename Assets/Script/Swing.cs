@@ -19,7 +19,7 @@ public class Swing : MonoBehaviour
     [SerializeField] private float horizontalThrustForce = 200f;
     [SerializeField] private float forwardThrustForce = 200f;
     [SerializeField] private KeyCode fireKey = KeyCode.Mouse0;
-
+    [SerializeField] private float extraMomentum = 1.5f;
     [SerializeField] private LayerMask swingMask;
     [SerializeField] private float extendCableSpeed = 0.5f;
     [SerializeField] private float grappleMultiplier = 20f;
@@ -59,7 +59,7 @@ public class Swing : MonoBehaviour
         {
             StartSwing();
             player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Swinging;
-            OdmGearMovement();
+
         }
         if (Input.GetKeyUp(fireKey))
         {
@@ -153,36 +153,7 @@ public class Swing : MonoBehaviour
             }
         }
     }
-    private void OdmGearMovement()
-    {
-        // right
-        if (Input.GetKey(KeyCode.D)) rb.AddForce(orientation.right * horizontalThrustForce * Time.deltaTime);
-        // left
-        if (Input.GetKey(KeyCode.A)) rb.AddForce(-orientation.right * horizontalThrustForce * Time.deltaTime);
 
-        // forward
-        if (Input.GetKey(KeyCode.W)) rb.AddForce(orientation.forward * horizontalThrustForce * Time.deltaTime);
-
-        // shorten cable
-        if (Input.GetKey(KeyCode.Space))
-        {
-            Vector3 directionToPoint = swingPoint - transform.position;
-            rb.AddForce(directionToPoint.normalized * forwardThrustForce * Time.deltaTime);
-
-            float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
-
-            swingJoint.maxDistance = distanceFromPoint * 0.8f;
-            swingJoint.minDistance = distanceFromPoint * 0.25f;
-        }
-        // extend cable
-        if (Input.GetKey(KeyCode.S))
-        {
-            float extendedDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendCableSpeed;
-
-            swingJoint.maxDistance = extendedDistanceFromPoint * 0.8f;
-            swingJoint.minDistance = extendedDistanceFromPoint * 0.25f;
-        }
-    }
     private void StopSwing()
     {
         isSwinging = false;
