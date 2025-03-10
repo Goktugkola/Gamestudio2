@@ -4053,6 +4053,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 822055989977776824, guid: 027694aaa106378498d9187262ea9702, type: 3}
+      propertyPath: swingControl
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 822055989977776824, guid: 027694aaa106378498d9187262ea9702, type: 3}
       propertyPath: extraMomentum
       value: 10
       objectReference: {fileID: 0}
