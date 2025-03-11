@@ -51,6 +51,15 @@ MonoBehaviour:
   bulletCount: 5
   maxBulletCount: 5
   playerObject: {fileID: 5967847233439821266}
+  origin: {x: 0, y: 0, z: 0}
+  maxDistance: 10
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 183
+  sphereRadius: 0.5
+  direction: {x: 0, y: 0, z: 0}
+  playerCamera: {fileID: 7874412034104032496}
+  fireKey: 324
 --- !u!1 &1206671798567852152
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,12 +336,66 @@ MonoBehaviour:
   damperForce: 7
   horizontalThrustForce: 200
   forwardThrustForce: 200
+  fireKey: 323
   swingMask:
     serializedVersion: 2
     m_Bits: 4294967295
   extendCableSpeed: 0.5
   grappleMultiplier: 5
   currentWeaponid: 0
+--- !u!1 &4784566619620895273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7726351386485715575}
+  - component: {fileID: 1894273239895547579}
+  m_Layer: 0
+  m_Name: CheckLedge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7726351386485715575
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4784566619620895273}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.458, z: 0.694}
+  m_LocalScale: {x: 1, y: 0.27314, z: 0.72651}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4126577184997099756}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1894273239895547579
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4784566619620895273}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5141613705344428959
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,6 +457,8 @@ GameObject:
   - component: {fileID: 4126577184997099756}
   - component: {fileID: 5981059779052805473}
   - component: {fileID: 822055989977776824}
+  - component: {fileID: 6782090832157880552}
+  - component: {fileID: 8990926901045167266}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Untagged
@@ -417,6 +482,7 @@ Transform:
   - {fileID: 5009430664107480815}
   - {fileID: 3048916713816069600}
   - {fileID: 2102399219019830179}
+  - {fileID: 7726351386485715575}
   m_Father: {fileID: 435335786340405168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5981059779052805473
@@ -460,24 +526,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCam: {fileID: 1845582709654608288}
   orientation: {fileID: 3048916713816069600}
-  xRotation: 0
-  sensitivity: 50
-  sensMultiplier: 1
   moveSpeed: 2250
   maxSpeed: 15
+  jumpForce: 400
+  aircontrol: 1
   counterMovement: 0.175
   maxSlopeAngle: 35
   grounded: 0
   gravityMultiplier: 25
+  swingControl: 5
+  extraMomentum: 10
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  jumpForce: 400
   groundCheck: {fileID: 2102399219019830179}
   groundCheckRadius: 0.2
   slideForce: 400
   slideCounterMovement: 0.2
   State: 0
+--- !u!114 &6782090832157880552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967847233439821266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f76fbd8533041814a8a71391182cd124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerObject: {fileID: 5967847233439821266}
+  orientation: {fileID: 3048916713816069600}
+  positionMultiplierH: 0.65
+  positionMultiplierV: 0.85
+  jumpForce: 12
+  ledgeDistance: 1.5
+  ledgeCollider: {fileID: 0}
+--- !u!114 &8990926901045167266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967847233439821266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e397750550b94eb4eb81375d9d091a70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallRunForce: 20
+  wallcheckDistance: 2
+  playerObject: {fileID: 5967847233439821266}
+  orientation: {fileID: 3048916713816069600}
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &6053315008519036050
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,6 +735,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 4126577184997099756}
+  sensitivity: 50
+  sensMultiplier: 1
+  orientation: {fileID: 0}
+  xRotation: 0
 --- !u!1 &6680647063343673165
 GameObject:
   m_ObjectHideFlags: 0

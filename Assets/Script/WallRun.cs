@@ -1,10 +1,12 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class WallRun : MonoBehaviour
 {
     [SerializeField] float wallRunForce = 10f;
     [SerializeField] float wallcheckDistance = 1f;
+    [SerializeField] float wallJumpForce = 10f;
     private Vector3 wallRunDirection;
     public GameObject playerObject;
     public Transform orientation;
@@ -20,7 +22,7 @@ public class WallRun : MonoBehaviour
     {
         bool isWallRight = Physics.Raycast(playerObject.transform.position, playerObject.transform.right, out RaycastHit hitRight, wallcheckDistance, wallLayer);
         bool isWallLeft = Physics.Raycast(playerObject.transform.position, -playerObject.transform.right, out RaycastHit hitLeft, wallcheckDistance, wallLayer);
-
+        Vector3 directionToWall = isWallRight ? hitRight.normal : hitLeft.normal;
         if (!isWallRight && !isWallLeft)
         {
             if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.WallRunning)
@@ -30,32 +32,54 @@ public class WallRun : MonoBehaviour
             }
             return;
         }
-        if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.WallRunning && playerObject.GetComponent<Rigidbody>().linearVelocity.magnitude < playerObject.GetComponent<PlayerMovement>().maxSpeed)
+        if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.WallRunning)
         {
-            wallRunDirection = Vector3.ProjectOnPlane(playerObject.GetComponent<Rigidbody>().linearVelocity, wall.transform.forward);
-            print(wallRunDirection);
-            playerObject.GetComponent<Rigidbody>().AddForce(wallRunDirection.normalized * wallRunForce);
+
+
+            
+            float distanceToWall = isWallRight ? Vector3.Distance(playerObject.transform.position, hitRight.point) : Vector3.Distance(playerObject.transform.position, hitLeft.point);
+            wallRunDirection = Vector3.ProjectOnPlane(playerObject.GetComponent<Rigidbody>().linearVelocity, -directionToWall);
+            if (playerObject.GetComponent<Rigidbody>().linearVelocity.magnitude < playerObject.GetComponent<PlayerMovement>().maxSpeed)
+            {
+                playerObject.GetComponent<Rigidbody>().AddForce(wallRunDirection * wallRunForce);
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                playerObject.GetComponent<Rigidbody>().AddForce(directionToWall * wallJumpForce * 100);
+                playerObject.GetComponent<Rigidbody>().useGravity = true;
+                playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
+            }
+            else if (distanceToWall > 0.5f)
+            {
+                playerObject.GetComponent<Rigidbody>().AddForce(-directionToWall * wallRunForce);
+            }
         }
         wall = isWallRight ? hitRight.collider.gameObject : hitLeft.collider.gameObject;
         if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.falling)
         {
-            if (Vector3.Angle(orientation.forward, -wall.transform.forward) > 50)
+
+
+            if (Vector3.Angle( orientation.forward, -directionToWall) > 50 && Vector3.Angle(orientation.forward, -directionToWall) < 85)
             {
                 playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.WallRunning;
                 playerObject.GetComponent<Rigidbody>().useGravity = false;
-
-
             }
-
-            float distanceToWall = Vector3.Distance(playerObject.transform.position, wall.transform.position);
-            if (distanceToWall > 0.5f)
+            if (Vector3.Angle(-orientation.forward, -directionToWall) > 50 && Vector3.Angle(-orientation.forward, -directionToWall) < 85)
             {
-                Vector3 directionToWall = (wall.transform.position - playerObject.transform.position).normalized;
-                playerObject.GetComponent<Rigidbody>().AddForce(directionToWall * wallRunForce);
+                playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.WallRunning;
+                playerObject.GetComponent<Rigidbody>().useGravity = false;
             }
+
+
 
         }
 
     }
 
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(playerObject.transform.position, playerObject.transform.right * wallcheckDistance);
+        Gizmos.DrawRay(playerObject.transform.position, -playerObject.transform.right * wallcheckDistance);
+    }
 }

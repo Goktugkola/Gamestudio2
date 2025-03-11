@@ -19,7 +19,6 @@ public class Swing : MonoBehaviour
     [SerializeField] private float horizontalThrustForce = 200f;
     [SerializeField] private float forwardThrustForce = 200f;
     [SerializeField] private KeyCode fireKey = KeyCode.Mouse0;
-    [SerializeField] private float extraMomentum = 1.5f;
     [SerializeField] private LayerMask swingMask;
     [SerializeField] private float extendCableSpeed = 0.5f;
     [SerializeField] private float grappleMultiplier = 20f;
@@ -36,10 +35,7 @@ public class Swing : MonoBehaviour
     {
         HandleLength();
     }
-    private void FixedUpdate()
-    {
 
-    }
     private void LateUpdate()
     {
         HandleSwingInput();
