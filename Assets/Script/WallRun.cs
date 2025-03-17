@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
@@ -38,7 +39,7 @@ public class WallRun : MonoBehaviour
 
             
             float distanceToWall = isWallRight ? Vector3.Distance(playerObject.transform.position, hitRight.point) : Vector3.Distance(playerObject.transform.position, hitLeft.point);
-            wallRunDirection = Vector3.ProjectOnPlane(playerObject.GetComponent<Rigidbody>().linearVelocity, -directionToWall);
+            wallRunDirection = Vector3.ProjectOnPlane(new Vector3(playerObject.GetComponent<Rigidbody>().linearVelocity.x,0,playerObject.GetComponent<Rigidbody>().linearVelocity.z), -directionToWall);
             if (playerObject.GetComponent<Rigidbody>().linearVelocity.magnitude < playerObject.GetComponent<PlayerMovement>().maxSpeed)
             {
                 playerObject.GetComponent<Rigidbody>().AddForce(wallRunDirection * wallRunForce);

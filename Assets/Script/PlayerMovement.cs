@@ -12,12 +12,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 4500;
     [SerializeField] public float maxSpeed = 20;
     [SerializeField] private float jumpForce = 550f;
-
     [SerializeField] private float aircontrol = 1f;
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
     public float maxSlopeAngle = 35f;
     public bool grounded;
+    [Header("Sliding Settings")]
+    [SerializeField] private float slideForce = 400;
+    [SerializeField] private float slideCounterMovement = 0.2f;
+    private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
+    [SerializeField] private Vector3 playerScale;
     public int gravityMultiplier = 25;
     [Header("Swinging Settings")]
     public float swingControl = 10f;
@@ -33,8 +37,8 @@ public class PlayerMovement : MonoBehaviour
     private float groundCheckDistance = 0.4f;
     private float HorizontalInput, VerticalInput;
     //Sliding
-    public float slideForce = 400;
-    public float slideCounterMovement = 0.2f;
+    // 
+    //     public float slideCounterMovement = 0.2f;
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
     public MovementState State;
@@ -77,8 +81,29 @@ public class PlayerMovement : MonoBehaviour
         HorizontalInput = Input.GetAxisRaw("Horizontal");
         VerticalInput = Input.GetAxisRaw("Vertical");
         jumping = Input.GetButton("Jump");
+        crouching = Input.GetKey(KeyCode.LeftControl);
+
+        //Crouching
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+            StartCrouch();
+        if (Input.GetKeyUp(KeyCode.LeftControl))
+            StopCrouch();
     }
 
+    private void StartCrouch()
+    {
+        transform.localScale = crouchScale;
+        if (grounded)
+        {
+            rb.AddForce(orientation.transform.forward * slideForce);
+        }
+    }
+
+    private void StopCrouch()
+    {
+        transform.localScale = playerScale;
+        transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+    }
     private void HandleMovement()
     {
 
@@ -105,8 +130,12 @@ public class PlayerMovement : MonoBehaviour
         if (VerticalInput < 0 && yMag < -maxSpeed) VerticalInput = 0;
         if (grounded)
         {
-            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime);
-            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime);
+            if (!crouching)
+            {
+                rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime);
+                rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime);
+            }
+
         }
         else if (State == MovementState.falling)
         {
@@ -116,7 +145,6 @@ public class PlayerMovement : MonoBehaviour
         else if (State == MovementState.Swinging)
         {
             rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * swingControl * extraMomentum * Time.deltaTime / 100);
-            print("Swinging");
             rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * swingControl * Time.deltaTime / 100);
         }
 
