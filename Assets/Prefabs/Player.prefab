@@ -455,10 +455,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4126577184997099756}
-  - component: {fileID: 5981059779052805473}
   - component: {fileID: 822055989977776824}
-  - component: {fileID: 6782090832157880552}
   - component: {fileID: 8990926901045167266}
+  - component: {fileID: 6782090832157880552}
+  - component: {fileID: 5981059779052805473}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Untagged
@@ -485,6 +485,79 @@ Transform:
   - {fileID: 7726351386485715575}
   m_Father: {fileID: 435335786340405168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &822055989977776824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967847233439821266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 253cee35f78557b4bbfd6e252bac649f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCam: {fileID: 1845582709654608288}
+  orientation: {fileID: 3048916713816069600}
+  moveSpeed: 2250
+  maxSpeed: 15
+  jumpForce: 400
+  aircontrol: 1
+  counterMovement: 0.175
+  maxSlopeAngle: 35
+  grounded: 0
+  slideForce: 400
+  slideCounterMovement: 0.2
+  playerScale: {x: 0, y: 0, z: 0}
+  gravityMultiplier: 25
+  swingControl: 5
+  extraMomentum: 10
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheck: {fileID: 2102399219019830179}
+  groundCheckRadius: 0.2
+  State: 0
+--- !u!114 &8990926901045167266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967847233439821266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e397750550b94eb4eb81375d9d091a70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallRunForce: 20
+  wallcheckDistance: 2
+  wallJumpForce: 10
+  wallruntime: 0.9
+  playerObject: {fileID: 5967847233439821266}
+  orientation: {fileID: 3048916713816069600}
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!114 &6782090832157880552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5967847233439821266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f76fbd8533041814a8a71391182cd124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerObject: {fileID: 5967847233439821266}
+  orientation: {fileID: 3048916713816069600}
+  positionMultiplierH: 0.65
+  positionMultiplierV: 0.85
+  jumpForce: 12
+  ledgeDistance: 1.5
+  ledgeCollider: {fileID: 0}
 --- !u!54 &5981059779052805473
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -512,76 +585,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &822055989977776824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5967847233439821266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 253cee35f78557b4bbfd6e252bac649f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCam: {fileID: 1845582709654608288}
-  orientation: {fileID: 3048916713816069600}
-  moveSpeed: 2250
-  maxSpeed: 15
-  jumpForce: 400
-  aircontrol: 1
-  counterMovement: 0.175
-  maxSlopeAngle: 35
-  grounded: 0
-  gravityMultiplier: 25
-  swingControl: 5
-  extraMomentum: 10
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheck: {fileID: 2102399219019830179}
-  groundCheckRadius: 0.2
-  slideForce: 400
-  slideCounterMovement: 0.2
-  State: 0
---- !u!114 &6782090832157880552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5967847233439821266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f76fbd8533041814a8a71391182cd124, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerObject: {fileID: 5967847233439821266}
-  orientation: {fileID: 3048916713816069600}
-  positionMultiplierH: 0.65
-  positionMultiplierV: 0.85
-  jumpForce: 12
-  ledgeDistance: 1.5
-  ledgeCollider: {fileID: 0}
---- !u!114 &8990926901045167266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5967847233439821266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e397750550b94eb4eb81375d9d091a70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallRunForce: 20
-  wallcheckDistance: 2
-  playerObject: {fileID: 5967847233439821266}
-  orientation: {fileID: 3048916713816069600}
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!1 &6053315008519036050
 GameObject:
   m_ObjectHideFlags: 0

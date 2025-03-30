@@ -38,11 +38,7 @@ public class WallRun : MonoBehaviour
                 playerObject.GetComponent<Rigidbody>().useGravity = true;
                 playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
             }
-            if (wallruntime <= 0)
-            {
                 wallruntimeReset();
-            }
-            return;
         }
         if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.WallRunning)
         {
@@ -63,14 +59,12 @@ public class WallRun : MonoBehaviour
             wallRunDirection = new Vector3(wallRunDirection.x, 0, wallRunDirection.z);
             //Wallrun
             playerObject.GetComponent<Rigidbody>().AddForce(wallRunDirection * wallRunForce * wallruntime / 6);
-            if(playerObject.GetComponent<Rigidbody>().linearVelocity.y >3f)
-            {
-            playerObject.GetComponent<Rigidbody>().linearVelocity = new Vector3(playerObject.GetComponent<Rigidbody>().linearVelocity.x, 0, playerObject.GetComponent<Rigidbody>().linearVelocity.z);
-            }
+
             //Walljump
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 playerObject.GetComponent<Rigidbody>().AddForce(directionToWall * wallJumpForce * 100);
+                playerObject.GetComponent<Rigidbody>().AddForce(Vector3.up * wallJumpForce * 50);
                 playerObject.GetComponent<Rigidbody>().useGravity = true;
                 playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
             }
@@ -79,7 +73,10 @@ public class WallRun : MonoBehaviour
                 playerObject.GetComponent<Rigidbody>().AddForce(-directionToWall * wallRunForce);
             }
         }
+        if(isWallLeft || isWallRight)
+        {
         wall = isWallRight ? hitRight.collider.gameObject : hitLeft.collider.gameObject;
+        }
         if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.falling)
         {
 
