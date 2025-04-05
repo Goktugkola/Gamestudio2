@@ -55,7 +55,7 @@ public class WallRun : MonoBehaviour
                 playerObject.GetComponent<Rigidbody>().useGravity = true;
             }
             float distanceToWall = isWallRight ? Vector3.Distance(playerObject.transform.position, hitRight.point) : Vector3.Distance(playerObject.transform.position, hitLeft.point);
-            wallRunDirection = Vector3.ProjectOnPlane(playerObject.GetComponent<Rigidbody>().linearVelocity, -directionToWall);
+            wallRunDirection = Vector3.ProjectOnPlane(playerObject.GetComponent<Rigidbody>().linearVelocity, -directionToWall).normalized * playerObject.GetComponent<Rigidbody>().linearVelocity.magnitude;
             wallRunDirection = new Vector3(wallRunDirection.x, 0, wallRunDirection.z);
             //Wallrun
             playerObject.GetComponent<Rigidbody>().AddForce(wallRunDirection * wallRunForce * wallruntime / 6);
