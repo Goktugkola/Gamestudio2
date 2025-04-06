@@ -6,7 +6,7 @@ public class WallRun : MonoBehaviour
     [SerializeField] float wallRunForce = 10f;
     [SerializeField] float wallcheckDistance = 1f;
     [SerializeField] float wallJumpForce = 10f;
-    [SerializeField] float wallruntime = 0.9f;
+    float wallruntimer = 0.9f;
     private float defaultwallruntime;
     private Vector3 wallRunDirection;
     public GameObject playerObject;
@@ -15,10 +15,25 @@ public class WallRun : MonoBehaviour
     private bool isWallRight;
     private bool isWallLeft;
     [SerializeField] LayerMask wallLayer = 8;
+    private PlayerMovement playerMovement;
+    private Rigidbody rb;
+    private void Awake()
+    {
+        playerMovement = playerObject.GetComponent<PlayerMovement>();
+        rb = playerObject.GetComponent<Rigidbody>();
+        if (playerObject == null)
+        {
+            Debug.LogError("Player object is not assigned in the inspector.");
+        }
+        if (orientation == null)
+        {
+            Debug.LogError("Orientation is not assigned in the inspector.");
+        }
+    }
 
     private void Start()
     {
-        defaultwallruntime = wallruntime;
+        defaultwallruntime = wallruntimer;
     }
     void Update()
     {
@@ -33,63 +48,73 @@ public class WallRun : MonoBehaviour
         if (!isWallRight && !isWallLeft)
         {
 
-            if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.WallRunning)
+            if (playerMovement.State == PlayerMovement.MovementState.WallRunning)
             {
-                playerObject.GetComponent<Rigidbody>().useGravity = true;
-                playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
+                rb.useGravity = true;
+                playerMovement.State = PlayerMovement.MovementState.falling;
             }
                 wallruntimeReset();
         }
-        if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.WallRunning)
+        if (playerMovement.State == PlayerMovement.MovementState.WallRunning)
         {
-            if (wallruntime > 0)
+            if (wallruntimer > 0)
             {
-                wallruntime -= 0.01f;
+                wallruntimer -= 0.005f;
             }
-            if (wallruntime <= 0)
+            if (wallruntimer <= 0.01f)
             {
-                playerObject.GetComponent<Rigidbody>().useGravity = true;
+                rb.useGravity = true;
+                rb.AddForce(Vector3.down * 2, ForceMode.Acceleration);
             }
-            if (playerObject.GetComponent<Rigidbody>().linearVelocity.magnitude <= 5f)
+            if (rb.linearVelocity.magnitude <= 5f)
             {
-                playerObject.GetComponent<Rigidbody>().useGravity = true;
+                rb.useGravity = true;
+            }
+            if (wallruntimer > 0.5f)
+            {
+                if(rb.linearVelocity.y < 0)
+                {
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+                }
             }
             float distanceToWall = isWallRight ? Vector3.Distance(playerObject.transform.position, hitRight.point) : Vector3.Distance(playerObject.transform.position, hitLeft.point);
-            wallRunDirection = Vector3.ProjectOnPlane(playerObject.GetComponent<Rigidbody>().linearVelocity, -directionToWall).normalized * playerObject.GetComponent<Rigidbody>().linearVelocity.magnitude;
+            wallRunDirection = Vector3.ProjectOnPlane(rb.linearVelocity, -directionToWall).normalized * rb.linearVelocity.magnitude;
             wallRunDirection = new Vector3(wallRunDirection.x, 0, wallRunDirection.z);
+            
             //Wallrun
-            playerObject.GetComponent<Rigidbody>().AddForce(wallRunDirection * wallRunForce * wallruntime / 6);
+            wallruntimer = Mathf.Clamp(wallruntimer, 0.001f, defaultwallruntime);
+            rb.AddForce(wallRunDirection * wallRunForce * wallruntimer / 6, ForceMode.Force);
 
             //Walljump
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                playerObject.GetComponent<Rigidbody>().AddForce(directionToWall * wallJumpForce * 100);
-                playerObject.GetComponent<Rigidbody>().AddForce(Vector3.up * wallJumpForce * 50);
-                playerObject.GetComponent<Rigidbody>().useGravity = true;
-                playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
+                rb.AddForce(directionToWall * wallJumpForce * 100);
+                rb.AddForce(Vector3.up * wallJumpForce * 50);
+                rb.useGravity = true;
+                playerMovement.State = PlayerMovement.MovementState.falling;
             }
             else if (distanceToWall > 0.5f)
             {
-                playerObject.GetComponent<Rigidbody>().AddForce(-directionToWall * wallRunForce);
+                rb.AddForce(-directionToWall * wallRunForce);
             }
         }
         if(isWallLeft || isWallRight)
         {
         wall = isWallRight ? hitRight.collider.gameObject : hitLeft.collider.gameObject;
         }
-        if (playerObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.falling)
+        if (playerMovement.State == PlayerMovement.MovementState.falling)
         {
 
 
-            if (Vector3.Angle(orientation.forward, -directionToWall) > 50 && Vector3.Angle(orientation.forward, -directionToWall) < 85 && wallruntime > 0)
+            if (Vector3.Angle(orientation.forward, -directionToWall) > 50 && Vector3.Angle(orientation.forward, -directionToWall) < 95 && wallruntimer > 0)
             {
-                playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.WallRunning;
-                playerObject.GetComponent<Rigidbody>().useGravity = false;
+                playerMovement.State = PlayerMovement.MovementState.WallRunning;
+                rb.useGravity = false;
             }
-            if (Vector3.Angle(-orientation.forward, -directionToWall) > 50 && Vector3.Angle(-orientation.forward, -directionToWall) < 85 && wallruntime > 0)
+            if (Vector3.Angle(-orientation.forward, -directionToWall) > 50 && Vector3.Angle(-orientation.forward, -directionToWall) < 95 && wallruntimer > 0)
             {
-                playerObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.WallRunning;
-                playerObject.GetComponent<Rigidbody>().useGravity = false;
+                playerMovement.State = PlayerMovement.MovementState.WallRunning;
+                rb.useGravity = false;
             }
 
 
@@ -99,7 +124,7 @@ public class WallRun : MonoBehaviour
     }
     public void wallruntimeReset()
     {
-        wallruntime = defaultwallruntime;
+        wallruntimer = defaultwallruntime;
     }
 
     void OnDrawGizmos()
