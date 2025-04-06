@@ -19,7 +19,6 @@ public class BlinkScript : MonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
-            print("ah");
         Eyelids.SetTrigger("Blink");
         }
     }
