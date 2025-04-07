@@ -5270,7 +5270,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5141613705344428959}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8009c6e2bf874a44b9934d878274cb55, type: 3}
   m_Name: 
@@ -5353,6 +5353,7 @@ MonoBehaviour:
   groundCheckRadius: 0.2
   SpeedLines: {fileID: 2547056798989598966}
   State: 0
+  cansiftToggle: 0
 --- !u!114 &8990926901045167266
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -122,3 +122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Eyelids: {fileID: 0}
+  ObjectsToDestroy:
+  - {fileID: 0}
+  - {fileID: 992261772787692931}
+  - {fileID: 0}
+  PlayerToEnable: {fileID: 0}
+  SkyboxMaterial: {fileID: 2100000, guid: 2727870dcd3b20a4d915ace7862ba25c, type: 2}
