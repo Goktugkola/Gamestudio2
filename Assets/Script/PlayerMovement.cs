@@ -42,6 +42,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
     public MovementState State;
+
+    private bool shiftTogglePressed = false;
+
     public enum MovementState
     {
         running,
@@ -73,6 +76,16 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         HandleInput();
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !shiftTogglePressed)
+        {
+            shiftTogglePressed = true;
+            maxSpeed = (maxSpeed == 15f) ? 2f : 15f;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            shiftTogglePressed = false;
+        }
 
     }
 
