@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEditorInternal;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
@@ -36,9 +37,8 @@ public class PlayerMovement : MonoBehaviour
     private float jumpCooldown = 0.25f;
     private float groundCheckDistance = 0.4f;
     private float HorizontalInput, VerticalInput;
-    //Sliding
-    // 
-    //     public float slideCounterMovement = 0.2f;
+
+    [SerializeField] private GameObject SpeedLines;
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
     public MovementState State;
@@ -54,16 +54,21 @@ public class PlayerMovement : MonoBehaviour
         Grappling,
         WallRunning,
         Crouching,
-        Swinging
+        Swinging,
+        Firstsection
     }
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
+    void Start()
+    {
+        State = MovementState.Firstsection;
+    }
     private void FixedUpdate()
     {
         HandleMovement();
-        if (grounded && !jumping && !dashing && !crouching)
+        if (grounded && !jumping && !dashing && !crouching && State != MovementState.Firstsection)
         {
             State = MovementState.running;
         }
@@ -76,7 +81,43 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         HandleInput();
+        HandleEffectsCamera();
+    }
 
+        private void HandleEffectsCamera()
+    {
+        // Ensure the camera reference is valid
+        if (SpeedLines == null) return;
+
+        // Check if the player is falling
+        if (State == MovementState.falling)
+        {
+            // Check if the player's speed is at or above the maximum speed
+            if (rb.linearVelocity.magnitude >= maxSpeed)
+            {
+                // Enable the effects camera if it's not already enabled
+                if (!SpeedLines.gameObject.activeSelf)
+                {
+                    SpeedLines.gameObject.SetActive(true);
+                }
+            }
+            else
+            {
+                // Disable the effects camera if speed is below max speed (while falling)
+                if (SpeedLines.gameObject.activeSelf)
+                {
+                    SpeedLines.gameObject.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            // Disable the effects camera if the player is not falling
+            if (SpeedLines.gameObject.activeSelf)
+            {
+                SpeedLines.gameObject.SetActive(false);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.LeftShift) && !shiftTogglePressed)
         {
             shiftTogglePressed = true;
@@ -93,9 +134,20 @@ public class PlayerMovement : MonoBehaviour
     {
         HorizontalInput = Input.GetAxisRaw("Horizontal");
         VerticalInput = Input.GetAxisRaw("Vertical");
-        jumping = Input.GetButton("Jump");
+        if (State == MovementState.Firstsection)
+        {
+            HorizontalInput = Mathf.Clamp(HorizontalInput, 0, 0);
+            VerticalInput = Mathf.Clamp(VerticalInput, 0, 0.5f);
+            jumping = false;
+        }
+        else
+            jumping = Input.GetButton("Jump");
         crouching = Input.GetKey(KeyCode.LeftControl);
 
+        if (State == MovementState.Firstsection)
+        {
+
+        }
         //Crouching
         if (Input.GetKeyDown(KeyCode.LeftControl))
             StartCrouch();
