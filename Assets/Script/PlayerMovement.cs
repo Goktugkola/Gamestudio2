@@ -1,6 +1,4 @@
 using System;
-using Unity.Mathematics;
-using UnityEditorInternal;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
