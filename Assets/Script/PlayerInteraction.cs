@@ -24,9 +24,16 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (hit.collider.CompareTag("Interactable"))
             {
+                hit.collider.gameObject.GetComponent<MeshRenderer>().material.color = Color.red; // Change color to red when in range
                 interactUI.SetActive(true); // Enable the UI when an interactable object is in range
                 interactUI.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "Press E to interact with " + hit.collider.name;
-                interactUI.GetComponentInChildren<Image>().sprite = hit.collider.GetComponent<Interactable>().icon;
+                //interactUI.GetComponentInChildren<Image>().sprite = hit.collider.GetComponent<Interactable>().icon;
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    // Call the interact method on the interactable object
+                    hit.collider.SendMessage("Interact");
+                }
+                // Enable the interactable script on the object
                 return;
             }
         }

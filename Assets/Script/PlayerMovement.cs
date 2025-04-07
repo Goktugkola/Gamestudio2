@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     public MovementState State;
 
     private bool shiftTogglePressed = false;
+    public bool cansiftToggle = false;
 
     public enum MovementState
     {
@@ -118,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
                 SpeedLines.gameObject.SetActive(false);
             }
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !shiftTogglePressed)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !shiftTogglePressed && cansiftToggle)
         {
             shiftTogglePressed = true;
             maxSpeed = (maxSpeed == 15f) ? 2f : 15f;

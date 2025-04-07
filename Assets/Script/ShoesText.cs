@@ -7,6 +7,8 @@ public class ShoesText : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         text.SetActive(true);
+        other.gameObject.GetComponentInParent<WallRun>().enabled = true;
+        other.gameObject.GetComponentInParent<PlayerMovement>().cansiftToggle = true;
         Destroy(gameObject, 0.2f);
     }
 }

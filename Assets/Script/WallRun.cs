@@ -130,7 +130,7 @@ public class WallRun : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(playerObject.transform.position, orientation.right * wallcheckDistance);
-        Gizmos.DrawRay(playerObject.transform.position, -orientation.right * wallcheckDistance);
+        Gizmos.DrawRay(transform.position, orientation.right * wallcheckDistance);
+        Gizmos.DrawRay(transform.position, -orientation.right * wallcheckDistance);
     }
 }
