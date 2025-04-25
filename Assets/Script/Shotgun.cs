@@ -1,11 +1,11 @@
 using System.Collections;
-using UnityEngine; // Removed NUnit.Framework as it's likely not needed here
+using UnityEngine;
 
 public class Shotgun : MonoBehaviour
 {
     [Header("Shooting Mechanics")]
-    [SerializeField] private float knockbackForce = 20f; // Renamed for convention
-    [SerializeField] private float fireCooldown = 0.5f; // Time between shots
+    [SerializeField] private float knockbackForce = 20f;
+    [SerializeField] private float fireCooldown = 0.5f;
     [SerializeField] private int maxBulletCount = 5;
     [SerializeField] private float maxDistance = 10f;
     [SerializeField] private LayerMask targetLayers; // Layers considered as valid targets
@@ -13,45 +13,43 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private KeyCode fireKey = KeyCode.Mouse1;
 
     [Header("Challenge Settings")]
-    [SerializeField] private float challengeTimeLimit = 10.0f; // Time in seconds for the challenge
-    [SerializeField] private int targetCountGoal = 5; // How many targets to hit for success
+    [SerializeField] private float challengeTimeLimit = 10.0f;
+    [SerializeField] private int targetCountGoal = 5;
 
     [Header("References")]
-    [SerializeField] private GameObject playerObject; // Assign the Player GameObject
-    [SerializeField] private Camera playerCamera; // Assign the main Camera used for aiming
+    [SerializeField] private GameObject playerObject;
+    [SerializeField] private Camera playerCamera;
 
     // Internal State
     private int currentBulletCount;
     private float currentCooldown;
-    private int shotTargetCount; // Renamed for convention
+    private int shotTargetCount;
     private float currentChallengeTime;
     private bool isChallengeActive = false;
-    private bool challengeCompleted = false; // Flag to prevent repeated success/fail messages
+    private bool challengeCompleted = false;
 
     // Cached Components
     private PlayerMovement playerMovement;
     private Rigidbody playerRb;
 
+    // Optimization: Pre-allocate array for NonAlloc physics query
+    private RaycastHit[] sphereCastHits = new RaycastHit[10]; // Adjust size as needed
+
     void Awake()
     {
-        // Cache components for performance
+        // Cache components (already good)
         if (playerObject != null)
         {
             playerMovement = playerObject.GetComponent<PlayerMovement>();
-            playerRb = playerObject.GetComponent<Rigidbody>(); // Assuming Rigidbody is on the main player object
+            playerRb = playerObject.GetComponent<Rigidbody>();
         }
-        else
-        {
-            Debug.LogError("Player Object not assigned in the inspector!", this);
-        }
+        else Debug.LogError("Player Object not assigned!", this);
 
         if (playerCamera == null)
         {
-            Debug.LogError("Player Camera not assigned in the inspector!", this);
-            // Attempt to find the main camera as a fallback
+            Debug.LogError("Player Camera not assigned!", this);
             playerCamera = Camera.main;
-            if (playerCamera == null)
-                Debug.LogError("Could not find Main Camera!", this);
+            if (playerCamera == null) Debug.LogError("Could not find Main Camera!", this);
         }
     }
 
@@ -59,13 +57,11 @@ public class Shotgun : MonoBehaviour
     {
         currentBulletCount = maxBulletCount;
         currentCooldown = 0f;
-        // Optionally start the challenge immediately, or trigger it via another event/method
-        // StartChallenge();
+        // StartChallenge(); // Optional
     }
 
     public void Update()
     {
-        // Cooldown timer
         if (currentCooldown > 0)
         {
             currentCooldown -= Time.deltaTime;
@@ -78,7 +74,6 @@ public class Shotgun : MonoBehaviour
 
     private void HandleInput()
     {
-        // Allow shooting only if cooldown is over
         if (Input.GetKeyDown(fireKey) && currentCooldown <= 0)
         {
             Shoot();
@@ -87,7 +82,6 @@ public class Shotgun : MonoBehaviour
 
     private void HandleGroundReload()
     {
-        // Reload bullets when grounded (check if playerMovement is valid)
         if (playerMovement != null && playerMovement.grounded)
         {
             currentBulletCount = maxBulletCount;
@@ -100,20 +94,11 @@ public class Shotgun : MonoBehaviour
         {
             currentChallengeTime -= Time.deltaTime;
 
-            // Check for Success Condition
-            if (shotTargetCount >= targetCountGoal)
-            {
-                ChallengeSuccess();
-            }
-            // Check for Failure Condition (Timer runs out)
-            else if (currentChallengeTime <= 0)
-            {
-                ChallengeFail();
-            }
+            if (shotTargetCount >= targetCountGoal) ChallengeSuccess();
+            else if (currentChallengeTime <= 0) ChallengeFail();
         }
     }
 
-    // Call this method to begin the challenge
     public void StartChallenge()
     {
         Debug.Log("Challenge Started!");
@@ -126,79 +111,103 @@ public class Shotgun : MonoBehaviour
     private void ChallengeSuccess()
     {
         Debug.Log("Challenge SUCCESSFUL! Targets hit: " + shotTargetCount);
-        isChallengeActive = false; // Stop the timer
+        isChallengeActive = false;
         challengeCompleted = true;
         // --- ADD YOUR SUCCESS ACTIONS HERE ---
-        // Example: Load next level, display UI message, grant reward, etc.
-        // FindObjectOfType<GameManager>()?.ChallengeWon();
     }
 
     private void ChallengeFail()
     {
         Debug.Log("Challenge FAILED! Time ran out. Targets hit: " + shotTargetCount);
-        isChallengeActive = false; // Stop the timer
+        isChallengeActive = false;
         challengeCompleted = true;
         // --- ADD YOUR FAILURE ACTIONS HERE ---
-        // Example: Restart level, display UI message, etc.
-        // FindObjectOfType<GameManager>()?.ChallengeLost();
     }
 
     public void Shoot()
     {
-        // Early exit if references are missing, out of bullets, or on cooldown
-        if (playerCamera == null || playerObject == null || currentBulletCount <= 0 || currentCooldown > 0)
-        {
-            return;
-        }
+        // Early exit checks (already good)
+        if (playerCamera == null || playerObject == null || currentBulletCount <= 0 || currentCooldown > 0) return;
 
         Vector3 origin = playerCamera.transform.position;
         Vector3 direction = playerCamera.transform.forward;
 
-        RaycastHit[] hits = Physics.SphereCastAll(origin, sphereRadius, direction, maxDistance, targetLayers, QueryTriggerInteraction.Ignore);
+        // Optimization: Use SphereCastNonAlloc to avoid garbage allocation
+        int hitCount = Physics.SphereCastNonAlloc(
+            origin,
+            sphereRadius,
+            direction,
+            sphereCastHits, // Use pre-allocated array
+            maxDistance,
+            targetLayers, // Use the LayerMask directly
+            QueryTriggerInteraction.Ignore
+        );
 
-        int targetsHitThisShot = 0; // Track hits in this specific shot
+        int targetsHitThisShot = 0;
 
-        for (int i = 0; i < hits.Length; i++)
+        // Iterate only up to the actual number of hits found
+        for (int i = 0; i < hitCount; i++)
         {
-            // Check if the hit object's layer is within the targetLayers mask
-            // This is a more robust way than comparing layer index directly
-            if (hits[i].collider == null || hits[i].collider.gameObject.layer == 2) continue; // Skip if no collider
-            if (hits[i].collider.gameObject.layer == targetLayers.value) // Assuming "Target" is the layer name
+            RaycastHit hit = sphereCastHits[i]; // Get the hit info
+
+            // The SphereCastNonAlloc already filters by targetLayers,
+            // so no extra layer check is needed here unless you have
+            // multiple distinct target types within the same LayerMask.
+
+            targetsHitThisShot++;
+            if (isChallengeActive && !challengeCompleted)
             {
-                targetsHitThisShot++;
-                if (isChallengeActive && !challengeCompleted)
-                {
-                    shotTargetCount++; // Only count towards challenge if active
-                }
-
-                Debug.Log("Hit Target: " + hits[i].collider.gameObject.name);
-                Destroy(hits[i].collider.gameObject); // Destroy the hit target
-
-                // Optional Debug Drawing
-                Debug.DrawLine(origin, hits[i].point, Color.green, 2.0f);
-                Debug.DrawRay(hits[i].point, hits[i].normal * 0.5f, Color.red, 2.0f); // Shortened normal ray
+                shotTargetCount++;
             }
+
+            Debug.Log("Hit Target: " + hit.collider.gameObject.name);
+
+            // Optimization: Consider object pooling instead of Destroy if targets respawn or destruction is costly
+            Destroy(hit.collider.gameObject);
+
+            // Debug Drawing (keep if useful)
+            // Debug.DrawLine(origin, hit.point, Color.green, 2.0f);
+            // Debug.DrawRay(hit.point, hit.normal * 0.5f, Color.red, 2.0f);
         }
+        print("Targets hit this shot: " + targetsHitThisShot);
 
-        // Apply effects only if at least one target was potentially hit by the spherecast
-        // or even if no target was hit (depending on desired game feel)
-        if (hits.Length > 0 || true) // Decide if effects apply even on miss
-        {
-            // Fire Anim and sound here (Placeholder)
-            // AudioManager.PlaySound("ShotgunFire");
-            // animator.SetTrigger("Shoot");
-
-            // Knockback
+        // Apply effects (knockback, cooldown, ammo reduction)
+        // Consider if these should only happen if targetsHitThisShot > 0
+        // The current logic applies them even on a miss.
+        // if (targetsHitThisShot > 0) // Uncomment this line if effects should only apply on hit
+        // {
+            // Apply Knockback
             if (playerRb != null)
             {
-                // Apply knockback opposite to the camera's forward direction
-                playerRb.AddForce(-playerCamera.transform.forward * knockbackForce, ForceMode.Impulse);
-                Debug.Log("Applied Knockback");
+                playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse); // Use cached direction
+                // Debug.Log("Applied Knockback"); // Reduce debug logs in final builds
             }
 
             currentBulletCount--;
-            currentCooldown = fireCooldown; // Start cooldown timer
-        }
+            currentCooldown = fireCooldown;
+        // } // Uncomment this line if effects should only apply on hit
+    }
+        // Visualize the maximum range and radius of the spherecast in the Scene view
+    private void OnDrawGizmos()
+    {
+        // Ensure we have a camera reference to draw from
+        if (playerCamera == null) return;
+
+        Vector3 origin = playerCamera.transform.position;
+        Vector3 direction = playerCamera.transform.forward;
+
+        // Calculate the center of the sphere at maximum distance
+        Vector3 sphereCenterAtMaxDist = origin + direction * maxDistance;
+
+        // Set the color for the gizmo
+        Gizmos.color = Color.yellow; // You can choose any color
+
+        // Draw the wire sphere
+        Gizmos.DrawWireSphere(sphereCenterAtMaxDist, sphereRadius);
+
+        // Optionally, draw a line representing the cast direction
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(origin, sphereCenterAtMaxDist);
     }
 }
 
