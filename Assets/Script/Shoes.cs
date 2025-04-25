@@ -8,6 +8,6 @@ public class Shoes : MonoBehaviour
     public void Interact()
     {
             playerObject.GetComponent<WallRun>().enabled = true;
-            playerObject.GetComponent<PlayerMovement>().cansiftToggle = true;
+            playerObject.GetComponent<PlayerMovement>().canShiftToggle = true;
     }
 }

@@ -51,7 +51,7 @@ public class WallRun : MonoBehaviour
             if (playerMovement.State == PlayerMovement.MovementState.WallRunning)
             {
                 rb.useGravity = true;
-                playerMovement.State = PlayerMovement.MovementState.falling;
+                playerMovement.State = PlayerMovement.MovementState.Falling;
             }
                 wallruntimeReset();
         }
@@ -91,7 +91,7 @@ public class WallRun : MonoBehaviour
                 rb.AddForce(directionToWall * wallJumpForce * 100);
                 rb.AddForce(Vector3.up * wallJumpForce * 50);
                 rb.useGravity = true;
-                playerMovement.State = PlayerMovement.MovementState.falling;
+                playerMovement.State = PlayerMovement.MovementState.Falling;
             }
             else if (distanceToWall > 0.5f)
             {
@@ -102,7 +102,7 @@ public class WallRun : MonoBehaviour
         {
         wall = isWallRight ? hitRight.collider.gameObject : hitLeft.collider.gameObject;
         }
-        if (playerMovement.State == PlayerMovement.MovementState.falling)
+        if (playerMovement.State == PlayerMovement.MovementState.Falling)
         {
 
 

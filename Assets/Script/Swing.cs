@@ -9,6 +9,7 @@ public class Swing : MonoBehaviour
     [SerializeField] private Transform gunTip;
     [SerializeField] private LineRenderer swingLine;
     private Rigidbody rb;
+    
     [Header("Swinging Settings")]
     [SerializeField] private float maxSwingDistance = 25f;
     [SerializeField] private float minSwingDistance = 3f;  // Minimum distance to consider
@@ -22,14 +23,17 @@ public class Swing : MonoBehaviour
     [SerializeField] private LayerMask swingMask;
     [SerializeField] private float extendCableSpeed = 0.5f;
     [SerializeField] private float grappleMultiplier = 20f;
+    private PlayerMovement.MovementState playerState;
     private bool isSwinging;
     private SpringJoint swingJoint;
     private Vector3 swingPoint;
     public int currentWeaponid = 0;
     private void Awake()
     {
+
         swingLine.positionCount = 0;
         rb = player.GetComponent<Rigidbody>();
+        playerState = player.GetComponent<PlayerMovement>().State;
     }
     private void Update()
     {
@@ -54,23 +58,23 @@ public class Swing : MonoBehaviour
         if (Input.GetKeyDown(fireKey))
         {
             StartSwing();
-            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Swinging;
+            playerState = PlayerMovement.MovementState.Swinging;
 
         }
         if (Input.GetKeyUp(fireKey))
         {
             StopSwing();
-            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
+            playerState = PlayerMovement.MovementState.Falling;
         }
         /*/if (Input.GetMouseButtonDown(1))
         {
             StartSwing();
-            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Grappling;
+            playerState = PlayerMovement.MovementState.Grappling;
         }
         if (Input.GetMouseButtonUp(1))
         {
             StopSwing();
-            player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.falling;
+            playerState = PlayerMovement.MovementState.falling;
         }/*/
     }
     private void StartSwing()
@@ -135,12 +139,12 @@ public class Swing : MonoBehaviour
                 swingJoint.damper = 0f;
 
             }
-            else if (player.gameObject.GetComponent<PlayerMovement>().State != PlayerMovement.MovementState.Grappling)
+            else if (playerState != PlayerMovement.MovementState.Grappling)
             {
                 print("Swing direction and player's velocity direction are not the same");
                 swingJoint.damper = damperForce;
             }
-            if (player.gameObject.GetComponent<PlayerMovement>().State == PlayerMovement.MovementState.Grappling)
+            if (playerState == PlayerMovement.MovementState.Grappling)
             {
                 print("Grapple mode");
                 swingJoint.damper = 0;
@@ -153,7 +157,7 @@ public class Swing : MonoBehaviour
     private void StopSwing()
     {
         isSwinging = false;
-        player.gameObject.GetComponent<PlayerMovement>().State = PlayerMovement.MovementState.Swinging;
+        playerState = PlayerMovement.MovementState.Swinging;
 
         swingLine.positionCount = 0;
         Destroy(swingJoint);

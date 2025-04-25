@@ -15,13 +15,26 @@ public class PlayerMovement : MonoBehaviour
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
     public float maxSlopeAngle = 35f;
-    public bool grounded;
     [Header("Sliding Settings")]
     [SerializeField] private float slideForce = 400;
     [SerializeField] private float slideCounterMovement = 0.2f;
     private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
-    [SerializeField] private Vector3 playerScale;
+    private Vector3 playerScale = new Vector3(1, 1, 1);
     public int gravityMultiplier = 25;
+    [Header("Movement State")] 
+    public MovementState State;
+        [SerializeField]public enum MovementState
+    {
+        Running, // Changed to PascalCase
+        Jumping,
+        Dashing,
+        Falling, // Changed to PascalCase
+        Grappling,
+        WallRunning,
+        Crouching,
+        Swinging,
+        FirstSection // Changed to PascalCase
+    }
     [Header("Swinging Settings")]
     public float swingControl = 10f;
     [SerializeField] private float extraMomentum = 1.5f;
@@ -30,110 +43,72 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask whatIsGround;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
-    private bool jumping, dashing, crouching = false;
+    [SerializeField] private float groundCheckDistance = 0.4f; // Moved closer to other ground check variables
+    public bool grounded; // Moved from Movement Settings
+
+    [Header("State Flags")] // Added Header for clarity
+    private bool jumping = false; // Initialize explicitly
+    private bool dashing = false; // Initialize explicitly
+    private bool crouching = false;
     private bool readyToJump = true;
+    private bool shiftTogglePressed = false; // Moved closer to related variable
+    public bool canShiftToggle = false;
+
+    [Header("Input")] // Added Header for clarity
+    private float HorizontalInput;
+    private float VerticalInput;
+
+    [Header("Cooldowns")] // Added Header for clarity
     private float jumpCooldown = 0.25f;
-    private float groundCheckDistance = 0.4f;
-    private float HorizontalInput, VerticalInput;
 
-    [SerializeField] private GameObject SpeedLines;
+
+    [Header("Physics Related")] // Added Header for clarity
     private Vector3 normalVector = Vector3.up;
-    private Vector3 wallNormalVector;
-    public MovementState State;
+    private Vector3 wallNormalVector; // Consider initializing if it has a default state
 
-    private bool shiftTogglePressed = false;
-    public bool cansiftToggle = false;
+    // Public state variable
+    // Consider making setter private if only changed internally
 
-    public enum MovementState
-    {
-        running,
-        Jumping,
-        Dashing,
-        falling,
-        Grappling,
-        WallRunning,
-        Crouching,
-        Swinging,
-        Firstsection
-    }
+    // Enum defining player movement states
+
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        // Validate required components are assigned
+        if (playerCam == null) Debug.LogError("Player Camera not assigned!", this);
+        if (orientation == null) Debug.LogError("Orientation Transform not assigned!", this);
+        if (groundCheck == null) Debug.LogError("Ground Check Transform not assigned!", this);
     }
+
     void Start()
     {
-        State = MovementState.Firstsection;
+        State = MovementState.FirstSection; // Use PascalCase enum member
+        playerScale = transform.localScale; // Initialize playerScale in Start
     }
     private void FixedUpdate()
     {
         HandleMovement();
-        if (grounded && !jumping && !dashing && !crouching && State != MovementState.Firstsection)
+        if (grounded && !jumping && !dashing && !crouching && State != MovementState.FirstSection)
         {
-            State = MovementState.running;
+            State = MovementState.Running;
         }
         if (!grounded && !Input.GetMouseButton(0) && !Input.GetMouseButton(1) && !dashing && State != MovementState.WallRunning)
         {
-            State = MovementState.falling;
+            State = MovementState.Falling;
         }
         UpdateGrounding();
     }
     private void Update()
     {
         HandleInput();
-        HandleEffectsCamera();
     }
-
-        private void HandleEffectsCamera()
-    {
-        // Ensure the camera reference is valid
-        if (SpeedLines == null) return;
-
-        // Check if the player is falling
-        if (State == MovementState.falling)
-        {
-            // Check if the player's speed is at or above the maximum speed
-            if (rb.linearVelocity.magnitude >= maxSpeed)
-            {
-                // Enable the effects camera if it's not already enabled
-                if (!SpeedLines.gameObject.activeSelf)
-                {
-                    SpeedLines.gameObject.SetActive(true);
-                }
-            }
-            else
-            {
-                // Disable the effects camera if speed is below max speed (while falling)
-                if (SpeedLines.gameObject.activeSelf)
-                {
-                    SpeedLines.gameObject.SetActive(false);
-                }
-            }
-        }
-        else
-        {
-            // Disable the effects camera if the player is not falling
-            if (SpeedLines.gameObject.activeSelf)
-            {
-                SpeedLines.gameObject.SetActive(false);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !shiftTogglePressed && cansiftToggle)
-        {
-            shiftTogglePressed = true;
-            maxSpeed = (maxSpeed == 15f) ? 2f : 15f;
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            shiftTogglePressed = false;
-        }
-
-    }
-
     private void HandleInput()
     {
         HorizontalInput = Input.GetAxisRaw("Horizontal");
         VerticalInput = Input.GetAxisRaw("Vertical");
-        if (State == MovementState.Firstsection)
+        if (State == MovementState.FirstSection)
         {
             HorizontalInput = Mathf.Clamp(HorizontalInput, 0, 0);
             VerticalInput = Mathf.Clamp(VerticalInput, 0, 0.5f);
@@ -143,10 +118,16 @@ public class PlayerMovement : MonoBehaviour
             jumping = Input.GetButton("Jump");
         crouching = Input.GetKey(KeyCode.LeftControl);
 
-        if (State == MovementState.Firstsection)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !shiftTogglePressed && canShiftToggle)
         {
-
+            shiftTogglePressed = true;
+            maxSpeed = (maxSpeed == 15f) ? 2f : 15f;
         }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            shiftTogglePressed = false;
+        }
+
         //Crouching
         if (Input.GetKeyDown(KeyCode.LeftControl))
             StartCrouch();
@@ -170,11 +151,13 @@ public class PlayerMovement : MonoBehaviour
     }
     private void HandleMovement()
     {
+        // Cache Time.deltaTime
+        float dt = Time.deltaTime;
 
         // Apply extra gravity
         if (!grounded && State != MovementState.WallRunning)
         {
-            ApplyGravity();
+            ApplyGravity(); // ApplyGravity already uses Time.deltaTime
         }
 
         Vector2 mag = FindVelRelativeToLook();
@@ -182,40 +165,53 @@ public class PlayerMovement : MonoBehaviour
 
 
         //Counteract sliding and sloppy movement
-        CounterMovement(HorizontalInput, VerticalInput, mag);
+        CounterMovement(HorizontalInput, VerticalInput, mag); // CounterMovement uses Time.deltaTime
 
         //If holding jump && ready to jump, then jump
         if (readyToJump && jumping) Jump();
 
         //If speed is larger than maxspeed, cancel out the input so you don't go over max speed
+        // Consider using sqrMagnitude here if profiling shows it's beneficial,
+        // but FindVelRelativeToLook already calculates magnitude.
         if (HorizontalInput > 0 && xMag > maxSpeed) HorizontalInput = 0;
         if (HorizontalInput < 0 && xMag < -maxSpeed) HorizontalInput = 0;
         if (VerticalInput > 0 && yMag > maxSpeed) VerticalInput = 0;
         if (VerticalInput < 0 && yMag < -maxSpeed) VerticalInput = 0;
+
+        // Cache orientation vectors
+        Transform orientationTransform = orientation.transform;
+        Vector3 forward = orientationTransform.forward;
+        Vector3 right = orientationTransform.right;
+
         if (grounded)
         {
             if (!crouching)
             {
-                rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * Time.deltaTime);
-                rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * Time.deltaTime);
+                rb.AddForce(forward * VerticalInput * moveSpeed * dt);
+                rb.AddForce(right * HorizontalInput * moveSpeed * dt);
             }
 
         }
-        else if (State == MovementState.falling)
+        else if (State == MovementState.Falling)
         {
-            rb.AddForce(orientation.transform.forward * VerticalInput * aircontrol * moveSpeed * Time.deltaTime / 10);
-            rb.AddForce(orientation.transform.right * HorizontalInput * aircontrol * moveSpeed * Time.deltaTime / 10);
+            // Precompute multiplier if beneficial
+            float airForceMultiplier = aircontrol * moveSpeed * dt / 10f;
+            rb.AddForce(forward * VerticalInput * airForceMultiplier);
+            rb.AddForce(right * HorizontalInput * airForceMultiplier);
         }
         else if (State == MovementState.Swinging)
         {
-            rb.AddForce(orientation.transform.forward * VerticalInput * moveSpeed * swingControl * extraMomentum * Time.deltaTime / 100);
-            rb.AddForce(orientation.transform.right * HorizontalInput * moveSpeed * swingControl * Time.deltaTime / 100);
+            // Precompute multiplier if beneficial
+            float swingForceMultiplier = moveSpeed * swingControl * dt / 100f;
+            rb.AddForce(forward * VerticalInput * swingForceMultiplier * extraMomentum); // Apply extraMomentum here
+            rb.AddForce(right * HorizontalInput * swingForceMultiplier);
         }
 
     }
 
     private void ApplyGravity()
     {
+        // Cache gravity calculation if gravityMultiplier is constant during gameplay
         rb.AddForce(Vector3.down * Time.deltaTime * gravityMultiplier * 10);
     }
 
@@ -270,28 +266,38 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!grounded || jumping) return;
 
+        // Cache Time.deltaTime
+        float dt = Time.deltaTime;
+
         //Slow down sliding
         if (crouching)
         {
-            rb.AddForce(moveSpeed * Time.deltaTime * -rb.linearVelocity.normalized * slideCounterMovement);
+            rb.AddForce(moveSpeed * dt * -rb.linearVelocity.normalized * slideCounterMovement);
             return;
         }
+
+        // Cache orientation vectors
+        Transform orientationTransform = orientation.transform;
+        Vector3 right = orientationTransform.right;
+        Vector3 forward = orientationTransform.forward;
 
         //Counter movement
         if (Math.Abs(mag.x) > threshold && Math.Abs(x) < 0.05f || (mag.x < -threshold && x > 0) || (mag.x > threshold && x < 0))
         {
-            rb.AddForce(moveSpeed * orientation.transform.right * Time.deltaTime * -mag.x * counterMovement);
+            rb.AddForce(moveSpeed * right * dt * -mag.x * counterMovement);
         }
         if (Math.Abs(mag.y) > threshold && Math.Abs(y) < 0.05f || (mag.y < -threshold && y > 0) || (mag.y > threshold && y < 0))
         {
-            rb.AddForce(moveSpeed * orientation.transform.forward * Time.deltaTime * -mag.y * counterMovement);
+            rb.AddForce(moveSpeed * forward * dt * -mag.y * counterMovement);
         }
 
-        //Limit diagonal running. This will also cause a full stop if sliding fast and un-crouching, so not optimal.
-        if (Mathf.Sqrt((Mathf.Pow(rb.linearVelocity.x, 2) + Mathf.Pow(rb.linearVelocity.z, 2))) > maxSpeed)
+        //Limit diagonal running using sqrMagnitude
+        float maxSpeedSquared = maxSpeed * maxSpeed;
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        if (horizontalVelocity.sqrMagnitude > maxSpeedSquared)
         {
             float fallspeed = rb.linearVelocity.y;
-            Vector3 n = rb.linearVelocity.normalized * maxSpeed;
+            Vector3 n = horizontalVelocity.normalized * maxSpeed;
             rb.linearVelocity = new Vector3(n.x, fallspeed, n.z);
         }
     }

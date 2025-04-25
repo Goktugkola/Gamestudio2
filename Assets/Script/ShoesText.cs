@@ -8,7 +8,7 @@ public class ShoesText : MonoBehaviour
     {
         text.SetActive(true);
         other.gameObject.GetComponentInParent<WallRun>().enabled = true;
-        other.gameObject.GetComponentInParent<PlayerMovement>().cansiftToggle = true;
+        other.gameObject.GetComponentInParent<PlayerMovement>().canShiftToggle = true;
         Destroy(gameObject, 0.2f);
     }
 }
