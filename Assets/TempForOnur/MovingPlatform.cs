@@ -9,7 +9,7 @@ public class MovingPlatform : MonoBehaviour
     {
         if (other.gameObject.tag.Equals(playerTag))
         {
-            other.gameObject.transform.parent = platform;
+            other.gameObject.transform.parent.gameObject.transform.parent.gameObject.transform.parent = platform;
         }
     }
 
@@ -17,7 +17,7 @@ public class MovingPlatform : MonoBehaviour
     {
         if (other.gameObject.tag.Equals(playerTag))
         {
-            other.gameObject.transform.parent = null;
+            other.gameObject.transform.parent.gameObject.transform.parent.gameObject.transform.parent = null;
         }
     }
 }
