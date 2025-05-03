@@ -27,6 +27,7 @@ public class Swing : MonoBehaviour
     private bool isSwinging;
     private SpringJoint swingJoint;
     private Vector3 swingPoint;
+    private GameObject swingObject;
     public int currentWeaponid = 0;
     private void Awake()
     {
@@ -112,6 +113,7 @@ public class Swing : MonoBehaviour
         {
             isSwinging = true;
             swingPoint = hit.point;
+            swingObject = hit.collider.gameObject;
             swingJoint = player.gameObject.AddComponent<SpringJoint>();
 
             swingJoint.autoConfigureConnectedAnchor = false;
@@ -124,14 +126,16 @@ public class Swing : MonoBehaviour
             swingJoint.spring = springForce;
             swingJoint.damper = damperForce;
             swingJoint.massScale = 4.5f;
-
+            swingJoint.connectedAnchor = swingPoint;
             swingLine.positionCount = 2;
         }
     }
     public void HandleLength()
     {
+
         if (isSwinging == true && swingJoint != null)
         {
+            swingJoint.connectedAnchor = swingObject.transform.position;
             Vector3 directionToPoint = swingPoint - player.transform.position;
             if (Vector3.Dot(rb.linearVelocity.normalized, directionToPoint.normalized) > 0.7f || player.position.y > swingJoint.transform.position.y) // Adjust the threshold as needed
             {
@@ -168,6 +172,6 @@ public class Swing : MonoBehaviour
         if (!isSwinging) return;
 
         swingLine.SetPosition(0, gunTip.position);
-        swingLine.SetPosition(1, swingPoint);
+        swingLine.SetPosition(1, swingObject.transform.position);
     }
 }
