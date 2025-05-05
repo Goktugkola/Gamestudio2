@@ -6,6 +6,8 @@ public class Shotgun : MonoBehaviour
     [Header("Shooting Mechanics")]
     [SerializeField] private float knockbackForce = 20f;
     [SerializeField] private float fireCooldown = 0.5f;
+    public int ammoLeft => currentBulletCount;
+    public int ammoMax => maxBulletCount;
     [SerializeField] private int maxBulletCount = 5;
     [SerializeField] private float maxDistance = 10f;
     [SerializeField] private LayerMask targetLayers; // Layers considered as valid targets

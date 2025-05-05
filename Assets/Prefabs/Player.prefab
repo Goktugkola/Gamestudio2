@@ -46,20 +46,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d748623df71223c4584fdec7b904d936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  KnockbackForce: 20
+  knockbackForce: 20
   fireCooldown: 0.5
-  bulletCount: 5
   maxBulletCount: 5
-  playerObject: {fileID: 5967847233439821266}
-  origin: {x: 0, y: 0, z: 0}
   maxDistance: 10
   targetLayers:
     serializedVersion: 2
     m_Bits: 182
   sphereRadius: 0.5
-  direction: {x: 0, y: 0, z: 0}
-  playerCamera: {fileID: 7874412034104032496}
   fireKey: 324
+  challengeTimeLimit: 10
+  targetCountGoal: 5
+  playerObject: {fileID: 5967847233439821266}
+  playerCamera: {fileID: 7874412034104032496}
 --- !u!1 &1206671798567852152
 GameObject:
   m_ObjectHideFlags: 0
@@ -5339,11 +5338,10 @@ MonoBehaviour:
   aircontrol: 1
   counterMovement: 0.175
   maxSlopeAngle: 35
-  grounded: 0
   slideForce: 400
   slideCounterMovement: 0.2
-  playerScale: {x: 1, y: 1, z: 1}
   gravityMultiplier: 100
+  State: 0
   swingControl: 5
   extraMomentum: 10
   whatIsGround:
@@ -5351,9 +5349,9 @@ MonoBehaviour:
     m_Bits: 64
   groundCheck: {fileID: 2102399219019830179}
   groundCheckRadius: 0.2
-  SpeedLines: {fileID: 2547056798989598966}
-  State: 0
-  cansiftToggle: 0
+  groundCheckDistance: 0.4
+  grounded: 0
+  canShiftToggle: 0
 --- !u!114 &8990926901045167266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5371,6 +5369,8 @@ MonoBehaviour:
   wallJumpForce: 10
   playerObject: {fileID: 5967847233439821266}
   orientation: {fileID: 3048916713816069600}
+  isWallRight: 0
+  isWallLeft: 0
   wallLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -5393,6 +5393,9 @@ MonoBehaviour:
   jumpForce: 12
   ledgeDistance: 1.5
   ledgeCollider: {fileID: 1894273239895547579}
+  ledgeLayer:
+    serializedVersion: 2
+    m_Bits: 6
 --- !u!54 &5981059779052805473
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5945,6 +5948,7 @@ GameObject:
   - component: {fileID: 3841741062671908725}
   - component: {fileID: 8093060556342121693}
   - component: {fileID: 5136188855406136199}
+  - component: {fileID: 959463733834018419}
   m_Layer: 0
   m_Name: EffectsCamera
   m_TagString: Untagged
@@ -6071,6 +6075,25 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &959463733834018419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8364284453443514356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fb3b9510861d5644a8e79a4ca9ec7cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedLines: {fileID: 2547056798989598966}
+  SpeedlineTreshold: 0.5
+  playerMovement: {fileID: 822055989977776824}
+  rb: {fileID: 5981059779052805473}
+  playerCam: {fileID: 6053315008519036050}
+  wallRun: {fileID: 8990926901045167266}
+  wallRunTiltSpeed: 5
 --- !u!1001 &657257681002911535
 PrefabInstance:
   m_ObjectHideFlags: 0

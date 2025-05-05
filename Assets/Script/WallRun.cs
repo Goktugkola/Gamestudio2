@@ -12,8 +12,8 @@ public class WallRun : MonoBehaviour
     public GameObject playerObject;
     public Transform orientation;
     private GameObject wall;
-    private bool isWallRight;
-    private bool isWallLeft;
+    public bool isWallRight;
+    public bool isWallLeft;
     [SerializeField] LayerMask wallLayer = 8;
     private PlayerMovement playerMovement;
     private Rigidbody rb;

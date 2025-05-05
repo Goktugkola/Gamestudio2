@@ -32,7 +32,7 @@ public class CamFollow : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         //Perform the rotations
-        gameObject.transform.localRotation = Quaternion.Euler(xRotation, desiredX, 0);
+        gameObject.transform.localRotation = Quaternion.Euler(xRotation, desiredX, transform.localRotation.eulerAngles.z);
         orientation.transform.localRotation = Quaternion.Euler(0, desiredX, 0);
     }
 }
