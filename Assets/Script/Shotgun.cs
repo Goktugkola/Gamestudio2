@@ -25,7 +25,7 @@ public class Shotgun : MonoBehaviour
     [SerializeField] bool dashmode = false; // Optional: Use this to toggle dash mode
 
     // Internal State
-    [SerializeField] KeyCode ToggleKey = KeyCode.Q;
+    [SerializeField] KeyCode DashKey = KeyCode.LeftShift;
     private int currentBulletCount;
     private float currentCooldown;
     private int shotTargetCount;
@@ -79,10 +79,10 @@ public class Shotgun : MonoBehaviour
 
     private void HandleInput()
     {
-        if(Input.GetKeyDown(ToggleKey))
+        if (Input.GetKeyDown(DashKey))
         {
-            dashmode = !dashmode;
-            Debug.Log("Dash mode toggled: " + dashmode);
+            playerRb.AddForce(playerCamera.transform.forward * knockbackForce, ForceMode.Impulse);
+            currentBulletCount--;
         }
         if (Input.GetKeyDown(fireKey) && currentCooldown <= 0)
         {
@@ -143,11 +143,7 @@ public class Shotgun : MonoBehaviour
         Vector3 direction = playerCamera.transform.forward;
         if (playerRb != null)
         {
-            if (dashmode == false)
-            { playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse); }
-            else if (dashmode == true)
-            { playerRb.AddForce(direction * knockbackForce, ForceMode.Impulse); }
-
+            playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse);
         }
         // Optimization: Use SphereCastNonAlloc to avoid garbage allocation
         int hitCount = Physics.SphereCastNonAlloc(

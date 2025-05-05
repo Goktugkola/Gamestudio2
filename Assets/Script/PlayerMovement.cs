@@ -118,12 +118,12 @@ public class PlayerMovement : MonoBehaviour
             jumping = Input.GetButton("Jump");
         crouching = Input.GetKey(KeyCode.LeftControl);
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !shiftTogglePressed && canShiftToggle)
+        if (Input.GetKeyDown(KeyCode.LeftAlt) && !shiftTogglePressed && canShiftToggle)
         {
             shiftTogglePressed = true;
             maxSpeed = (maxSpeed == 15f) ? 2f : 15f;
         }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        if (Input.GetKeyUp(KeyCode.LeftAlt))
         {
             shiftTogglePressed = false;
         }
