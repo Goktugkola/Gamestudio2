@@ -79,10 +79,13 @@ public class Shotgun : MonoBehaviour
 
     private void HandleInput()
     {
-        if (Input.GetKeyDown(DashKey))
+        if (Input.GetKeyDown(DashKey) && currentBulletCount == maxBulletCount)
         {
-            playerRb.AddForce(playerCamera.transform.forward * knockbackForce, ForceMode.Impulse);
-            currentBulletCount--;
+            if (playerMovement.State != PlayerMovement.MovementState.Running)
+            {
+                playerRb.AddForce(playerCamera.transform.forward * knockbackForce, ForceMode.Impulse);
+                currentBulletCount--;
+            }
         }
         if (Input.GetKeyDown(fireKey) && currentCooldown <= 0)
         {
