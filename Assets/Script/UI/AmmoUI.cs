@@ -3,12 +3,23 @@ using UnityEngine;
 public class AmmoUI : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private TMPro.TextMeshProUGUI AmmoLeftText;
-    [SerializeField] private TMPro.TextMeshProUGUI AmmoMaxText;
+    [SerializeField] private GameObject AmmoEmpty;
+    [SerializeField] private GameObject AmmoFull;
     [SerializeField] private Shotgun shotgun;
     void Update()
     {
-        AmmoLeftText.text = shotgun.ammoLeft.ToString();
-        AmmoMaxText.text = shotgun.ammoMax.ToString();
+        if (shotgun != null)
+        {
+            if(shotgun.ammoCurrent == shotgun.ammoMax)
+            {
+                AmmoEmpty.SetActive(false);
+                AmmoFull.SetActive(true);
+            }
+            else
+            {
+                AmmoEmpty.SetActive(true);
+                AmmoFull.SetActive(false);
+            }
+        }
     }
 }

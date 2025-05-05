@@ -115,7 +115,7 @@ public class Swing : MonoBehaviour
             swingPoint = hit.point;
             swingObject = hit.collider.gameObject;
             swingJoint = player.gameObject.AddComponent<SpringJoint>();
-
+            localswingPoint = swingObject.transform.InverseTransformPoint(swingPoint);
             swingJoint.autoConfigureConnectedAnchor = false;
             swingJoint.connectedAnchor = swingPoint;
 
@@ -130,13 +130,16 @@ public class Swing : MonoBehaviour
             swingLine.positionCount = 2;
         }
     }
+    private Vector3 localswingPoint;
+    private Vector3 worldswingPoint;
     public void HandleLength()
     {
 
         if (isSwinging == true && swingJoint != null)
         {
-            swingJoint.connectedAnchor = swingObject.transform.position;
-            Vector3 directionToPoint = swingPoint - player.transform.position;
+            worldswingPoint = swingObject.transform.TransformPoint(localswingPoint);
+            swingJoint.connectedAnchor = worldswingPoint;
+            Vector3 directionToPoint = worldswingPoint - player.transform.position;
             if (Vector3.Dot(rb.linearVelocity.normalized, directionToPoint.normalized) > 0.7f || player.position.y > swingJoint.transform.position.y) // Adjust the threshold as needed
             {
                 print("Swing direction and player's velocity direction are the same");
@@ -172,6 +175,6 @@ public class Swing : MonoBehaviour
         if (!isSwinging) return;
 
         swingLine.SetPosition(0, gunTip.position);
-        swingLine.SetPosition(1, swingObject.transform.position);
+        swingLine.SetPosition(1, worldswingPoint);
     }
 }
