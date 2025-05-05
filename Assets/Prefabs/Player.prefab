@@ -59,6 +59,8 @@ MonoBehaviour:
   targetCountGoal: 5
   playerObject: {fileID: 5967847233439821266}
   playerCamera: {fileID: 7874412034104032496}
+  dashmode: 0
+  DashKey: 304
 --- !u!1 &1206671798567852152
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,8 +230,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 6}
-  m_LocalScale: {x: 0.65789473, y: 0.65789473, z: 0.65789473}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 366304198753192005}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -6088,7 +6090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedLines: {fileID: 2547056798989598966}
-  SpeedlineTreshold: 0.5
+  SpeedlineTreshold: 20
   playerMovement: {fileID: 822055989977776824}
   rb: {fileID: 5981059779052805473}
   playerCam: {fileID: 6053315008519036050}

@@ -7,7 +7,7 @@ public class PlayerEffectsController : MonoBehaviour
     [Tooltip("The GameObject containing the speed line particle system or effect.")]
     [SerializeField] private GameObject speedLines;
     [Tooltip("The threshold speed for activating speed lines.")]
-    [SerializeField] private float SpeedlineTreshold = 0.5f; 
+    [SerializeField] private float SpeedlineTreshold = 400f; 
     [Header("References")]
     public PlayerMovement playerMovement;
     public Rigidbody rb;
@@ -86,8 +86,7 @@ public class PlayerEffectsController : MonoBehaviour
         bool shouldShowSpeedLines = false;
 
         // Determine if speed lines should be active
-        if (playerMovement.State == PlayerMovement.MovementState.Falling &&
-            rb.linearVelocity.sqrMagnitude >= playerMovement.maxSpeed + SpeedlineTreshold)
+        if (rb.linearVelocity.magnitude >= SpeedlineTreshold)
         {
             shouldShowSpeedLines = true;
         }

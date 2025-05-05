@@ -8,8 +8,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform orientation;
     private Rigidbody rb;
     [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 4500;
-    [SerializeField] public float maxSpeed = 20;
+    [SerializeField] private float moveSpeed = 4500f;
+    [SerializeField] public float maxSpeed = 20f;
     [SerializeField] private float jumpForce = 550f;
     [SerializeField] private float aircontrol = 1f;
     public float counterMovement = 0.175f;
