@@ -131,7 +131,11 @@ public class Shotgun : MonoBehaviour
 
         Vector3 origin = playerCamera.transform.position;
         Vector3 direction = playerCamera.transform.forward;
-
+        if (playerRb != null)
+        {
+            playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse); // Use cached direction
+                                                                               // Debug.Log("Applied Knockback"); // Reduce debug logs in final builds
+        }
         // Optimization: Use SphereCastNonAlloc to avoid garbage allocation
         int hitCount = Physics.SphereCastNonAlloc(
             origin,
@@ -150,9 +154,6 @@ public class Shotgun : MonoBehaviour
         {
             RaycastHit hit = sphereCastHits[i]; // Get the hit info
 
-            // The SphereCastNonAlloc already filters by targetLayers,
-            // so no extra layer check is needed here unless you have
-            // multiple distinct target types within the same LayerMask.
 
             targetsHitThisShot++;
             if (isChallengeActive && !challengeCompleted)
@@ -176,18 +177,14 @@ public class Shotgun : MonoBehaviour
         // The current logic applies them even on a miss.
         // if (targetsHitThisShot > 0) // Uncomment this line if effects should only apply on hit
         // {
-            // Apply Knockback
-            if (playerRb != null)
-            {
-                playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse); // Use cached direction
-                // Debug.Log("Applied Knockback"); // Reduce debug logs in final builds
-            }
+        // Apply Knockback
 
-            currentBulletCount--;
-            currentCooldown = fireCooldown;
+
+        currentBulletCount--;
+        currentCooldown = fireCooldown;
         // } // Uncomment this line if effects should only apply on hit
     }
-        // Visualize the maximum range and radius of the spherecast in the Scene view
+    // Visualize the maximum range and radius of the spherecast in the Scene view
     private void OnDrawGizmos()
     {
         // Ensure we have a camera reference to draw from
