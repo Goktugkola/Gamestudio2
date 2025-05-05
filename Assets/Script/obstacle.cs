@@ -2,15 +2,12 @@ using UnityEngine;
 
 public class obstacle : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    Animation hitanim;
+    void Hit()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(hitanim != null)
+        {
+            hitanim.Play("HitAnimation"); // Replace with your animation name
+        }
     }
 }

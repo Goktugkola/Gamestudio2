@@ -22,7 +22,10 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private GameObject playerObject;
     [SerializeField] private Camera playerCamera;
 
+    [SerializeField] bool dashmode = false; // Optional: Use this to toggle dash mode
+
     // Internal State
+    [SerializeField] KeyCode ToggleKey = KeyCode.Q;
     private int currentBulletCount;
     private float currentCooldown;
     private int shotTargetCount;
@@ -76,6 +79,11 @@ public class Shotgun : MonoBehaviour
 
     private void HandleInput()
     {
+        if(Input.GetKeyDown(ToggleKey))
+        {
+            dashmode = !dashmode;
+            Debug.Log("Dash mode toggled: " + dashmode);
+        }
         if (Input.GetKeyDown(fireKey) && currentCooldown <= 0)
         {
             Shoot();
@@ -135,8 +143,11 @@ public class Shotgun : MonoBehaviour
         Vector3 direction = playerCamera.transform.forward;
         if (playerRb != null)
         {
-            playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse); // Use cached direction
-                                                                               // Debug.Log("Applied Knockback"); // Reduce debug logs in final builds
+            if (dashmode == false)
+            { playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse); }
+            else if (dashmode == true)
+            { playerRb.AddForce(direction * knockbackForce, ForceMode.Impulse); }
+
         }
         // Optimization: Use SphereCastNonAlloc to avoid garbage allocation
         int hitCount = Physics.SphereCastNonAlloc(
@@ -166,7 +177,7 @@ public class Shotgun : MonoBehaviour
             Debug.Log("Hit Target: " + hit.collider.gameObject.name);
 
             // Optimization: Consider object pooling instead of Destroy if targets respawn or destruction is costly
-            Destroy(hit.collider.gameObject);
+            hit.collider.gameObject.SendMessage("Hit", SendMessageOptions.DontRequireReceiver);
 
             // Debug Drawing (keep if useful)
             // Debug.DrawLine(origin, hit.point, Color.green, 2.0f);
