@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Shotgun : MonoBehaviour
@@ -36,6 +37,7 @@ public class Shotgun : MonoBehaviour
     // Cached Components
     private PlayerMovement playerMovement;
     private Rigidbody playerRb;
+    public List<GameObject> targetsHit;
 
     // Optimization: Pre-allocate array for NonAlloc physics query
     private RaycastHit[] sphereCastHits = new RaycastHit[10]; // Adjust size as needed
@@ -71,7 +73,7 @@ public class Shotgun : MonoBehaviour
         {
             currentCooldown -= Time.deltaTime;
         }
-
+        HandleTargets();
         HandleInput();
         HandleGroundReload();
         HandleChallengeTimer();
@@ -136,7 +138,25 @@ public class Shotgun : MonoBehaviour
         challengeCompleted = true;
         // --- ADD YOUR FAILURE ACTIONS HERE ---
     }
-
+    private void HandleTargets()
+    {
+        if(playerMovement != null && playerMovement.State == PlayerMovement.MovementState.Running)
+        {
+            for(int i = 0; i < targetsHit.Count; i++)
+            {
+                GameObject target = targetsHit[i];
+                if (target != null && target.GetComponent<Collider>() != null)
+                {
+                    target.GetComponent<Collider>().enabled = false; // Disable the target
+                    print("Clear Target: " + target.name);
+                    //target.GetComponent<Animation>().Play("Stop");
+                    targetsHit.RemoveAt(i); // Remove the target from the list 
+                }
+            }
+          
+            shotTargetCount = 0; // Reset the shot target count
+        }
+    }
     public void Shoot()
     {
         // Early exit checks (already good)
@@ -177,7 +197,8 @@ public class Shotgun : MonoBehaviour
 
             // Optimization: Consider object pooling instead of Destroy if targets respawn or destruction is costly
             hit.collider.gameObject.SendMessage("Hit", SendMessageOptions.DontRequireReceiver);
-
+            currentBulletCount++;
+            targetsHit.Add(hit.collider.gameObject);
             // Debug Drawing (keep if useful)
             // Debug.DrawLine(origin, hit.point, Color.green, 2.0f);
             // Debug.DrawRay(hit.point, hit.normal * 0.5f, Color.red, 2.0f);

@@ -17,6 +17,8 @@ public class obstacle : MonoBehaviour
         if(hitanim != null)
         {
             hitanim.Play("Target"); // Replace with your animation name
+            GetComponent<Collider>().enabled = false; // Disable the collider to prevent further hits
+            
         }
     }
 }
