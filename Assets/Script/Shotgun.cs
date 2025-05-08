@@ -147,7 +147,8 @@ public class Shotgun : MonoBehaviour
                 GameObject target = targetsHit[i];
                 if (target != null && target.GetComponent<Collider>() != null)
                 {
-                    target.GetComponent<Collider>().enabled = false; // Disable the target
+                    target.SendMessage("StopAnimation", SendMessageOptions.DontRequireReceiver); // Call StopAnimation on the target
+                    target.GetComponent<Collider>().enabled = true;
                     print("Clear Target: " + target.name);
                     //target.GetComponent<Animation>().Play("Stop");
                     targetsHit.RemoveAt(i); // Remove the target from the list 
@@ -194,9 +195,8 @@ public class Shotgun : MonoBehaviour
             }
 
             Debug.Log("Hit Target: " + hit.collider.gameObject.name);
-
-            // Optimization: Consider object pooling instead of Destroy if targets respawn or destruction is costly
-            hit.collider.gameObject.SendMessage("Hit", SendMessageOptions.DontRequireReceiver);
+            bool hitState = playerMovement != null && playerMovement.State == PlayerMovement.MovementState.Running ? false : true;
+            hit.collider.gameObject.SendMessage("Hit", hitState, SendMessageOptions.DontRequireReceiver);
             currentBulletCount++;
             targetsHit.Add(hit.collider.gameObject);
             // Debug Drawing (keep if useful)
