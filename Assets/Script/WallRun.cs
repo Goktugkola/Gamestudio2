@@ -6,6 +6,10 @@ public class WallRun : MonoBehaviour
     [SerializeField] float wallRunForce = 10f;
     [SerializeField] float wallcheckDistance = 1f;
     [SerializeField] float wallJumpForce = 10f;
+    [SerializeField] private float coyoteTimeDuration = 0.2f; // Duration of coyote time
+    private float coyoteTimeTimer = 0f; // Tracks remaining coyote time
+    private Vector3 lastWallNormal; // Stores the last wall's normal for jumping
+    private bool canUseCoyoteTime = false; // Indicates if coyote time is active
     float wallruntimer = 0.9f;
     private float defaultwallruntime;
     private Vector3 wallRunDirection;
@@ -14,6 +18,7 @@ public class WallRun : MonoBehaviour
     private GameObject wall;
     public bool isWallRight;
     public bool isWallLeft;
+    
     [SerializeField] LayerMask wallLayer = 8;
     private PlayerMovement playerMovement;
     private Rigidbody rb;
@@ -44,17 +49,20 @@ public class WallRun : MonoBehaviour
     {
         isWallRight = Physics.Raycast(playerObject.transform.position, orientation.right, out RaycastHit hitRight, wallcheckDistance, wallLayer);
         isWallLeft = Physics.Raycast(playerObject.transform.position, -orientation.right, out RaycastHit hitLeft, wallcheckDistance, wallLayer);
-        Vector3 directionToWall = isWallRight ? hitRight.normal : hitLeft.normal;
+        Vector3 directionToWall = isWallRight ? hitRight.normal : isWallLeft ? hitLeft.normal : Vector3.zero;
+
         if (!isWallRight && !isWallLeft)
         {
-
             if (playerMovement.State == PlayerMovement.MovementState.WallRunning)
             {
                 rb.useGravity = true;
                 playerMovement.State = PlayerMovement.MovementState.Falling;
+                canUseCoyoteTime = true; // Enable coyote time
+                coyoteTimeTimer = coyoteTimeDuration; // Reset coyote time timer
             }
-                wallruntimeReset();
+            wallruntimeReset();
         }
+
         if (playerMovement.State == PlayerMovement.MovementState.WallRunning)
         {
             if (wallruntimer > 0)
@@ -92,20 +100,37 @@ public class WallRun : MonoBehaviour
                 rb.AddForce(Vector3.up * wallJumpForce * 50);
                 rb.useGravity = true;
                 playerMovement.State = PlayerMovement.MovementState.Falling;
+                canUseCoyoteTime = false; // Disable coyote time after jumping
             }
             else if (distanceToWall > 0.5f)
             {
                 rb.AddForce(-directionToWall * wallRunForce);
             }
         }
-        if(isWallLeft || isWallRight)
+        else if (canUseCoyoteTime && coyoteTimeTimer > 0)
         {
-        wall = isWallRight ? hitRight.collider.gameObject : hitLeft.collider.gameObject;
+            print("Coyote time active: " + coyoteTimeTimer);
+            // Allow wall jump during coyote time
+            coyoteTimeTimer -= Time.deltaTime;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                print("Coyote jump!");
+                rb.AddForce(lastWallNormal * wallJumpForce * 100);
+                rb.AddForce(Vector3.up * wallJumpForce * 50);
+                rb.useGravity = true;
+                playerMovement.State = PlayerMovement.MovementState.Falling;
+                canUseCoyoteTime = false; // Disable coyote time after jumping
+            }
         }
+
+        if (isWallLeft || isWallRight)
+        {
+            wall = isWallRight ? hitRight.collider.gameObject : hitLeft.collider.gameObject;
+            lastWallNormal = directionToWall; // Store the last wall's normal
+        }
+
         if (playerMovement.State == PlayerMovement.MovementState.Falling)
         {
-
-
             if (Vector3.Angle(orientation.forward, -directionToWall) > 50 && Vector3.Angle(orientation.forward, -directionToWall) < 95 && wallruntimer > 0)
             {
                 playerMovement.State = PlayerMovement.MovementState.WallRunning;
@@ -116,11 +141,7 @@ public class WallRun : MonoBehaviour
                 playerMovement.State = PlayerMovement.MovementState.WallRunning;
                 rb.useGravity = false;
             }
-
-
-
         }
-
     }
     public void wallruntimeReset()
     {

@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 4500f;
     [SerializeField] public float maxSpeed = 20f;
     [SerializeField] private float jumpForce = 550f;
+    [SerializeField] private float coyoteTimeDuration = 0.15f; // Time window to jump after leaving ground
     [SerializeField] private float aircontrol = 1f;
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
@@ -45,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private float groundCheckDistance = 0.4f; // Moved closer to other ground check variables
     public bool grounded; // Moved from Movement Settings
+    private bool wasGrounded; // To track if player was grounded in the previous FixedUpdate
 
     [Header("State Flags")] // Added Header for clarity
     private bool jumping = false; // Initialize explicitly
@@ -53,6 +55,8 @@ public class PlayerMovement : MonoBehaviour
     private bool readyToJump = true;
     private bool shiftTogglePressed = false; // Moved closer to related variable
     public bool canShiftToggle = false;
+    private float coyoteTimeTimer; // Timer for coyote time
+    private bool coyoteTimeActive; // Flag if coyote time is currently active
 
     [Header("Input")] // Added Header for clarity
     private float HorizontalInput;
@@ -89,6 +93,38 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        wasGrounded = grounded; // Store the grounded state from the *previous* FixedUpdate cycle
+        UpdateGrounding();      // Update the current grounded state
+
+        // Coyote Time Logic
+        if (wasGrounded && !grounded && State != MovementState.Jumping && State != MovementState.Dashing)
+        {
+            // Player just left the ground, not by jumping or dashing
+            coyoteTimeActive = true;
+            coyoteTimeTimer = coyoteTimeDuration;
+            Debug.Log("Coyote Time Activated. Duration: " + coyoteTimeDuration);
+        }
+
+        if (coyoteTimeActive)
+        {
+            coyoteTimeTimer -= Time.fixedDeltaTime;
+            // Debug.Log("Coyote Time Active. Timer: " + coyoteTimeTimer); // Optional: Log every frame coyote time is active
+            if (coyoteTimeTimer <= 0f)
+            {
+                coyoteTimeActive = false; // Coyote time expired
+                Debug.Log("Coyote Time Expired.");
+            }
+        }
+
+        if (grounded)
+        {
+            if (coyoteTimeActive) // Log only if it was active and now grounded
+            {
+                Debug.Log("Coyote Time Deactivated due to grounding.");
+            }
+            coyoteTimeActive = false; // Reset coyote time upon landing
+        }
+
         HandleMovement();
         if (grounded && !jumping && !dashing && !crouching && State != MovementState.FirstSection)
         {
@@ -98,7 +134,6 @@ public class PlayerMovement : MonoBehaviour
         {
             State = MovementState.Falling;
         }
-        UpdateGrounding();
     }
     private void Update()
     {
@@ -218,28 +253,41 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        State = MovementState.Jumping;
-        if (!grounded || !readyToJump) return;
+        // State = MovementState.Jumping; // Moved to be set only if jump is successful
+        if (!readyToJump) return; // Player must be ready (jump cooldown)
 
-
-        readyToJump = false;
-
-        // Add jump forces
-        rb.AddForce(Vector2.up * jumpForce * 1.5f);
-        rb.AddForce(normalVector * jumpForce * 0.5f);
-
-        // If jumping while falling, reset y velocity
-        Vector3 vel = rb.linearVelocity;
-        if (vel.y < 0.5f)
+        if (grounded || coyoteTimeActive) // Allow jump if grounded OR coyote time is active
         {
-            rb.linearVelocity = new Vector3(vel.x, 0, vel.z);
-        }
-        else if (vel.y > 0)
-        {
-            rb.linearVelocity = new Vector3(vel.x, vel.y / 2, vel.z);
-        }
+            State = MovementState.Jumping; // Set state to Jumping as a jump is happening
+            readyToJump = false;
 
-        Invoke(nameof(ResetJump), jumpCooldown);
+            if (coyoteTimeActive)
+            {
+                coyoteTimeActive = false; // Consume coyote time if it was used for this jump
+                Debug.Log("Coyote Time Consumed by Jump.");
+            }
+            else if (grounded)
+            {
+                Debug.Log("Standard Ground Jump.");
+            }
+
+            // Add jump forces
+            rb.AddForce(Vector2.up * jumpForce * 1.5f);
+            rb.AddForce(normalVector * jumpForce * 0.5f);
+
+            // If jumping while falling, reset y velocity
+            Vector3 vel = rb.linearVelocity;
+            if (vel.y < 0.5f)
+            {
+                rb.linearVelocity = new Vector3(vel.x, 0, vel.z);
+            }
+            else if (vel.y > 0)
+            {
+                rb.linearVelocity = new Vector3(vel.x, vel.y / 2, vel.z);
+            }
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
     }
     private void ResetJump()
     {
