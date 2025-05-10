@@ -82,10 +82,13 @@ public class Shotgun : MonoBehaviour
     private void HandleInput()
     {
         if (Input.GetKeyDown(DashKey) && currentBulletCount == maxBulletCount)
-        {
+        {   
+            
             if (playerMovement.State != PlayerMovement.MovementState.Running)
             {
-                playerRb.AddForce(playerCamera.transform.forward * knockbackForce, ForceMode.Impulse);
+                float velmagnitude = playerRb.linearVelocity.magnitude;
+                playerRb.linearVelocity = new Vector3(0, 0,0);
+                playerRb.AddForce(playerCamera.transform.forward * (knockbackForce + velmagnitude), ForceMode.Impulse);
                 currentBulletCount--;
             }
         }
@@ -165,6 +168,10 @@ public class Shotgun : MonoBehaviour
 
         Vector3 origin = playerCamera.transform.position;
         Vector3 direction = playerCamera.transform.forward;
+        if(playerRb.linearVelocity.y < 0)
+        {
+            playerRb.linearVelocity = new Vector3(playerRb.linearVelocity.x, 0, playerRb.linearVelocity.z);
+        }
         if (playerRb != null)
         {
             playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse);
