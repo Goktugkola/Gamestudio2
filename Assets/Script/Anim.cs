@@ -20,6 +20,14 @@ public class Anim : MonoBehaviour
     {
         float velocityMagnitude = rb.linearVelocity.magnitude;
         anim.speed = Mathf.Log(velocityMagnitude + 1, 2); // Using logarithm base 2
+        if(playerMovement.State == PlayerMovement.MovementState.Running || playerMovement.State == PlayerMovement.MovementState.WallRunning)
+        {
+            anim.SetBool("IsGround", true);
+        }
+        else
+        {
+            anim.SetBool("IsGround", false);
+        }
     }
     void playfootstep()
     {

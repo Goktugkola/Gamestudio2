@@ -321,6 +321,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2084332569877058048, guid: 027694aaa106378498d9187262ea9702, type: 3}
+      propertyPath: anim
+      value: 
+      objectReference: {fileID: 832247567}
+    - target: {fileID: 2084332569877058048, guid: 027694aaa106378498d9187262ea9702, type: 3}
+      propertyPath: playerMovement
+      value: 
+      objectReference: {fileID: 1841452885}
     - target: {fileID: 2559016497173515346, guid: 027694aaa106378498d9187262ea9702, type: 3}
       propertyPath: rb
       value: 
@@ -529,7 +537,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 832247567}
+  footstepSoundsWood: []
+  footstepSoundsGrass: []
+  footstepSoundsStone: []
+  footstepAudioSource: {fileID: 832247571}
   rb: {fileID: 1043135702}
+  playerMovement: {fileID: 1841452885}
+--- !u!82 &832247571 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7064532384158778539, guid: 027694aaa106378498d9187262ea9702, type: 3}
+  m_PrefabInstance: {fileID: 742206235}
+  m_PrefabAsset: {fileID: 0}
 --- !u!54 &1043135702 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 5981059779052805473, guid: 027694aaa106378498d9187262ea9702, type: 3}
@@ -656,6 +674,17 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &1841452885 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 822055989977776824, guid: 027694aaa106378498d9187262ea9702, type: 3}
+  m_PrefabInstance: {fileID: 742206235}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 253cee35f78557b4bbfd6e252bac649f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
