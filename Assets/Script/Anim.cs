@@ -10,6 +10,7 @@ public class Anim : MonoBehaviour
     [SerializeField] AudioSource footstepAudioSource;
     [SerializeField] public Rigidbody rb;
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private WallRun wallRun;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,12 +21,33 @@ public class Anim : MonoBehaviour
     {
         float velocityMagnitude = rb.linearVelocity.magnitude;
         anim.speed = Mathf.Log(velocityMagnitude + 1, 2); // Using logarithm base 2
-        if(playerMovement.State == PlayerMovement.MovementState.Running || playerMovement.State == PlayerMovement.MovementState.WallRunning)
+        if (playerMovement.State == PlayerMovement.MovementState.Running)
         {
             anim.SetBool("IsGround", true);
         }
+        else if (playerMovement.State == PlayerMovement.MovementState.WallRunning)
+        {
+            if (wallRun.isWallLeft)
+            {
+                anim.SetBool("IsWallLeft", true);
+                anim.SetBool("IsWallRight", false);
+            }
+            else if (wallRun.isWallRight)
+            {
+                anim.SetBool("IsWallRight", true);
+                anim.SetBool("IsWallLeft", false);
+            }
+            else
+            {
+                anim.SetBool("IsWallLeft", false);
+                anim.SetBool("IsWallRight", false);
+            }
+
+        }
         else
         {
+            anim.SetBool("IsWallLeft", false);
+            anim.SetBool("IsWallRight", false);
             anim.SetBool("IsGround", false);
         }
     }
