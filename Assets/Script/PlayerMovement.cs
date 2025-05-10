@@ -42,6 +42,13 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("For Ground Check")]
     public LayerMask whatIsGround;
+    public enum SurfaceType
+    {
+        Grass,
+        Stone,
+        Wood,
+    }
+    public SurfaceType currentSurface;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private float groundCheckDistance = 0.4f; // Moved closer to other ground check variables
@@ -360,7 +367,13 @@ public class PlayerMovement : MonoBehaviour
         if (grounded && Physics.Raycast(groundCheck.position, Vector3.down,
             out RaycastHit hit, groundCheckDistance))
         {
-
+            currentSurface = hit.collider.tag switch
+            {
+                "Grass" => SurfaceType.Grass,
+                "Stone" => SurfaceType.Stone,
+                "Wood" => SurfaceType.Wood,
+                _ => SurfaceType.Grass, // Default
+            };
             grounded = IsFloor(hit.normal);
             normalVector = hit.normal;
         }
