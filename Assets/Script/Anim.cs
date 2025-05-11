@@ -20,7 +20,7 @@ public class Anim : MonoBehaviour
     void Update()
     {
         float velocityMagnitude = rb.linearVelocity.magnitude;
-        anim.speed = Mathf.Log(velocityMagnitude + 1, 2); // Using logarithm base 2
+        anim.speed = Mathf.Log(velocityMagnitude + 1, 5); // Using logarithm base 2
         if (playerMovement.State == PlayerMovement.MovementState.Running)
         {
             anim.SetBool("IsGround", true);
