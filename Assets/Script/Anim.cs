@@ -11,6 +11,7 @@ public class Anim : MonoBehaviour
     [SerializeField] public Rigidbody rb;
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private WallRun wallRun;
+    [SerializeField] private Shotgun shotgun;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,7 +21,14 @@ public class Anim : MonoBehaviour
     void Update()
     {
         float velocityMagnitude = rb.linearVelocity.magnitude;
-        anim.speed = Mathf.Log(velocityMagnitude + 1, 5); // Using logarithm base 2
+        if(anim.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
+        {
+            anim.speed = 5;
+        }
+        else
+        {
+            anim.speed = Mathf.Log(velocityMagnitude + 1, 5); // Using logarithm base 2
+        }
         if (playerMovement.State == PlayerMovement.MovementState.Running)
         {
             anim.SetBool("IsGround", true);
@@ -50,7 +58,21 @@ public class Anim : MonoBehaviour
             anim.SetBool("IsWallRight", false);
             anim.SetBool("IsGround", false);
         }
+        if (shotgun != null)
+        {
+            if (shotgun.isDashing)
+            {
+                anim.SetBool("IsDash", true);
+                anim.Play("Dash");
+            }
+        }
     }
+    void disableDash()
+    {
+        shotgun.isDashing = false;
+        anim.SetBool("IsDash", false);
+    }
+    
     void playfootstep()
     {
         if (footstepAudioSource != null)

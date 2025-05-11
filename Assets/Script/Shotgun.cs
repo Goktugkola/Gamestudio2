@@ -33,6 +33,8 @@ public class Shotgun : MonoBehaviour
     private float currentChallengeTime;
     private bool isChallengeActive = false;
     private bool challengeCompleted = false;
+    public bool isDashing;
+    public bool isShooting;
 
     // Cached Components
     private PlayerMovement playerMovement;
@@ -82,15 +84,8 @@ public class Shotgun : MonoBehaviour
     private void HandleInput()
     {
         if (Input.GetKeyDown(DashKey) && currentBulletCount == maxBulletCount)
-        {   
-            
-            if (playerMovement.State != PlayerMovement.MovementState.Running)
-            {
-                float velmagnitude = playerRb.linearVelocity.magnitude;
-                playerRb.linearVelocity = new Vector3(0, 0,0);
-                playerRb.AddForce(playerCamera.transform.forward * (knockbackForce + velmagnitude), ForceMode.Impulse);
-                currentBulletCount--;
-            }
+        {
+            Dash();
         }
         if (Input.GetKeyDown(fireKey) && currentCooldown <= 0)
         {
@@ -143,9 +138,9 @@ public class Shotgun : MonoBehaviour
     }
     private void HandleTargets()
     {
-        if(playerMovement != null && playerMovement.State == PlayerMovement.MovementState.Running)
+        if (playerMovement != null && playerMovement.State == PlayerMovement.MovementState.Running)
         {
-            for(int i = 0; i < targetsHit.Count; i++)
+            for (int i = 0; i < targetsHit.Count; i++)
             {
                 GameObject target = targetsHit[i];
                 if (target != null && target.GetComponent<Collider>() != null)
@@ -157,8 +152,20 @@ public class Shotgun : MonoBehaviour
                     targetsHit.RemoveAt(i); // Remove the target from the list 
                 }
             }
-          
+
             shotTargetCount = 0; // Reset the shot target count
+        }
+    }
+    public void Dash()
+    {
+
+        if (playerMovement.State != PlayerMovement.MovementState.Running)
+        {
+            isDashing = true;
+            float velmagnitude = playerRb.linearVelocity.magnitude;
+            playerRb.linearVelocity = new Vector3(0, 0, 0);
+            playerRb.AddForce(playerCamera.transform.forward * (knockbackForce + velmagnitude), ForceMode.Impulse);
+            currentBulletCount--;
         }
     }
     public void Shoot()
