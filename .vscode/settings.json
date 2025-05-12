@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Gamestudio2.sln"
+    "dotnet.defaultSolution": "ProjectCekirge.sln"
 }
