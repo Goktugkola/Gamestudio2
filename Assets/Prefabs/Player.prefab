@@ -61,6 +61,8 @@ MonoBehaviour:
   playerCamera: {fileID: 7874412034104032496}
   dashmode: 0
   DashKey: 304
+  IsDash: 0
+  IsAirBlast: 0
   targetsHit: []
 --- !u!1 &1206671798567852152
 GameObject:
@@ -512,6 +514,8 @@ MonoBehaviour:
   playerCamera: {fileID: 7874412034104032496}
   dashmode: 0
   DashKey: 304
+  IsDash: 0
+  IsAirBlast: 0
   targetsHit: []
 --- !u!1 &2408221799053661684
 GameObject:
@@ -5615,9 +5619,9 @@ GameObject:
   - component: {fileID: 435335786340405168}
   - component: {fileID: 4582454387379792323}
   - component: {fileID: 2084332569877058048}
-  - component: {fileID: 8388019324542415940}
   - component: {fileID: 5196926322016537885}
   - component: {fileID: 7064532384158778539}
+  - component: {fileID: 5431026300788379353}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -5672,33 +5676,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
-  footstepSoundsWood: []
-  footstepSoundsGrass: []
-  footstepSoundsStone: []
+  SFXAudioSource: {fileID: 5431026300788379353}
+  dashSound: {fileID: 8300000, guid: e7977045002d2a34d9cca98d73edda21, type: 3}
+  airBlastSound: {fileID: 8300000, guid: 79efc0c313d175a459c7676eb6c47135, type: 3}
+  wallRunSound: {fileID: 8300000, guid: d1909ead6c494be4297fd3b6e4ab4277, type: 3}
+  footstepSoundsWood:
+  - {fileID: 8300000, guid: b00df96ed9fa99149ad82ea77b9803dc, type: 3}
+  - {fileID: 8300000, guid: 450e3c56481aebb438f8d9a16f9818fa, type: 3}
+  - {fileID: 8300000, guid: bd7fe7d76c494ff43ab54179c012986e, type: 3}
+  - {fileID: 8300000, guid: edc97819b4cba594faa31551f1419984, type: 3}
+  footstepSoundsGrass:
+  - {fileID: 8300000, guid: 42abed227dc346a4895db91850a4c87a, type: 3}
+  - {fileID: 8300000, guid: dacf099d55ce2c241972e5e264d91414, type: 3}
+  footstepSoundsStone:
+  - {fileID: 8300000, guid: bfeedaf2280c1c24985fecc8d1d43b41, type: 3}
+  - {fileID: 8300000, guid: 948dfb1ead5ead847924a8bf52fd2f02, type: 3}
+  - {fileID: 8300000, guid: 46098da49beb4ad4695bb3260c3ce274, type: 3}
+  - {fileID: 8300000, guid: 862d7ad96129a3240870cb39b8dbba7c, type: 3}
   footstepAudioSource: {fileID: 7064532384158778539}
   rb: {fileID: 5981059779052805473}
   playerMovement: {fileID: 0}
   wallRun: {fileID: 0}
---- !u!114 &8388019324542415940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5141613705344428959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12baaf54fef46e5448072f02dafc1eef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 0}
-  footstepSoundsWood: []
-  footstepSoundsGrass: []
-  footstepSoundsStone: []
-  footstepAudioSource: {fileID: 7064532384158778539}
-  rb: {fileID: 5981059779052805473}
-  playerMovement: {fileID: 822055989977776824}
-  wallRun: {fileID: 0}
+  shotgun: {fileID: 0}
 --- !u!95 &5196926322016537885
 Animator:
   serializedVersion: 7
@@ -5722,6 +5721,103 @@ Animator:
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
 --- !u!82 &7064532384158778539
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5141613705344428959}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &5431026300788379353
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

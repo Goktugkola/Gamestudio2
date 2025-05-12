@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - MovingPlatform
+  - Grass
+  - Stone
+  - Wood
   layers:
   - Default
   - TransparentFX

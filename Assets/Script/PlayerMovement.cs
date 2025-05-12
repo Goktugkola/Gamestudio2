@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
         WallRunning,
         Crouching,
         Swinging,
+        Mantling,
         FirstSection // Changed to PascalCase
     }
     [Header("Swinging Settings")]
@@ -103,6 +104,14 @@ public class PlayerMovement : MonoBehaviour
         wasGrounded = grounded; // Store the grounded state from the *previous* FixedUpdate cycle
         UpdateGrounding();      // Update the current grounded state
 
+        // If currently mantling, let LedgeJump handle the state exclusively
+        if (State == MovementState.Mantling)
+        {
+            // Optionally, you could add logic here specific to when the player is mantling,
+            // but for now, just returning prevents FixedUpdate from overriding the state.
+            return; 
+        }
+
         // Coyote Time Logic
         if (wasGrounded && !grounded && State != MovementState.Jumping && State != MovementState.Dashing)
         {
@@ -137,7 +146,8 @@ public class PlayerMovement : MonoBehaviour
         {
             State = MovementState.Running;
         }
-        if (!grounded && !Input.GetMouseButton(0) && !Input.GetMouseButton(1) && !dashing && State != MovementState.WallRunning)
+        // Ensure this condition doesn't conflict if Mantling state is handled above
+        if (!grounded && !Input.GetMouseButton(0) && !Input.GetMouseButton(1) && !dashing && State != MovementState.WallRunning && State != MovementState.Mantling) // Added Mantling check
         {
             State = MovementState.Falling;
         }

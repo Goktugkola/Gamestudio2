@@ -33,8 +33,8 @@ public class Shotgun : MonoBehaviour
     private float currentChallengeTime;
     private bool isChallengeActive = false;
     private bool challengeCompleted = false;
-    public bool isDashing;
-    public bool isShooting;
+    public bool IsDash;
+    public bool IsAirBlast;
 
     // Cached Components
     private PlayerMovement playerMovement;
@@ -161,7 +161,7 @@ public class Shotgun : MonoBehaviour
 
         if (playerMovement.State != PlayerMovement.MovementState.Running)
         {
-            isDashing = true;
+            IsDash = true;
             float velmagnitude = playerRb.linearVelocity.magnitude;
             playerRb.linearVelocity = new Vector3(0, 0, 0);
             playerRb.AddForce(playerCamera.transform.forward * (knockbackForce + velmagnitude), ForceMode.Impulse);
@@ -172,11 +172,12 @@ public class Shotgun : MonoBehaviour
     {
         // Early exit checks (already good)
         if (playerCamera == null || playerObject == null || currentBulletCount <= 0 || currentCooldown > 0) return;
-
+        
         Vector3 origin = playerCamera.transform.position;
         Vector3 direction = playerCamera.transform.forward;
         if (playerRb != null)
         {
+            IsAirBlast = true;
             float velmagnitude = playerRb.linearVelocity.magnitude;
             playerRb.linearVelocity = new Vector3(0, 0, 0);
             playerRb.AddForce(-direction * (knockbackForce + velmagnitude), ForceMode.Impulse);
