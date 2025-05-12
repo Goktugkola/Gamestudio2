@@ -3041,7 +3041,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615360}
   - {fileID: 8926484042661615361}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661615357}
   m_MasterData:
@@ -7199,7 +7199,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615532}
   - {fileID: 8926484042661615533}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661615529}
   m_MasterData:
@@ -8215,7 +8215,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: -126, y: 780}
+  m_UIPosition: {x: -97, y: 844}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
