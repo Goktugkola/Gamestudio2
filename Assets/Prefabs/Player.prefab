@@ -5677,7 +5677,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
   SFXAudioSource: {fileID: 5431026300788379353}
-  dashSound: {fileID: 8300000, guid: e7977045002d2a34d9cca98d73edda21, type: 3}
+  dashSound: {fileID: 8300000, guid: a842a195e078e2143a95aab4de06f83b, type: 3}
   airBlastSound: {fileID: 8300000, guid: 79efc0c313d175a459c7676eb6c47135, type: 3}
   wallRunSound: {fileID: 8300000, guid: d1909ead6c494be4297fd3b6e4ab4277, type: 3}
   footstepSoundsWood:
@@ -5695,9 +5695,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 862d7ad96129a3240870cb39b8dbba7c, type: 3}
   footstepAudioSource: {fileID: 7064532384158778539}
   rb: {fileID: 5981059779052805473}
-  playerMovement: {fileID: 0}
-  wallRun: {fileID: 0}
-  shotgun: {fileID: 0}
+  playerMovement: {fileID: 822055989977776824}
+  wallRun: {fileID: 8990926901045167266}
+  shotgun: {fileID: 769121578324137058}
 --- !u!95 &5196926322016537885
 Animator:
   serializedVersion: 7
@@ -6240,7 +6240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f2f040217f5734ba99cbc2eb4e4aef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rb: {fileID: 5981059779052805473}
 --- !u!1 &6680647063343673165
 GameObject:
   m_ObjectHideFlags: 0
