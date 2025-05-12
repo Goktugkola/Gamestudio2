@@ -59,6 +59,7 @@ MonoBehaviour:
   targetCountGoal: 5
   playerObject: {fileID: 5967847233439821266}
   playerCamera: {fileID: 7874412034104032496}
+  Anim: {fileID: 0}
   dashmode: 0
   DashKey: 304
   IsDash: 0
@@ -459,13 +460,14 @@ MonoBehaviour:
   maxDistance: 10
   targetLayers:
     serializedVersion: 2
-    m_Bits: 182
+    m_Bits: 128
   sphereRadius: 0.5
   fireKey: 324
   challengeTimeLimit: 10
   targetCountGoal: 5
   playerObject: {fileID: 5967847233439821266}
   playerCamera: {fileID: 7874412034104032496}
+  Anim: {fileID: 5196926322016537885}
   dashmode: 0
   DashKey: 304
   IsDash: 0

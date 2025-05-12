@@ -22,6 +22,7 @@ public class Shotgun : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject playerObject;
     [SerializeField] private Camera playerCamera;
+    [SerializeField] Animator Anim;
 
     [SerializeField] bool dashmode = false; // Optional: Use this to toggle dash mode
 
@@ -97,6 +98,7 @@ public class Shotgun : MonoBehaviour
     {
         if (playerMovement != null && playerMovement.grounded)
         {
+            Anim.Play("Reload");
             currentBulletCount = maxBulletCount;
         }
     }
