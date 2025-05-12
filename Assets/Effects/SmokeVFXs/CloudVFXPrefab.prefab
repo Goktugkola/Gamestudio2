@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4177172452629519189}
   - component: {fileID: 4616312178094329803}
   m_Layer: 0
-  m_Name: FogVFX
+  m_Name: CloudVFXPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
