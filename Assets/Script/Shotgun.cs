@@ -23,8 +23,6 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private GameObject playerObject;
     [SerializeField] private Camera playerCamera;
     [SerializeField] Animator Anim;
-    [SerializeField] GameObject AirblastExplosionEffect;
-    [SerializeField] GameObject AirblastEffect;
 
     [SerializeField] bool dashmode = false; // Optional: Use this to toggle dash mode
 
@@ -103,7 +101,6 @@ public class Shotgun : MonoBehaviour
         {
             if (currentBulletCount < maxBulletCount)
             {
-                AirblastEffect.SetActive(true);
                 Anim.Play("Reload");
             }
             currentBulletCount = maxBulletCount;

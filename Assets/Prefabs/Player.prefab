@@ -60,8 +60,6 @@ MonoBehaviour:
   playerObject: {fileID: 5967847233439821266}
   playerCamera: {fileID: 7874412034104032496}
   Anim: {fileID: 0}
-  AirblastExplosionEffect: {fileID: 0}
-  AirblastEffect: {fileID: 0}
   dashmode: 0
   DashKey: 304
   IsDash: 0
@@ -470,8 +468,6 @@ MonoBehaviour:
   playerObject: {fileID: 5967847233439821266}
   playerCamera: {fileID: 7874412034104032496}
   Anim: {fileID: 5196926322016537885}
-  AirblastExplosionEffect: {fileID: 8323224653308979849}
-  AirblastEffect: {fileID: 7261918845207872132}
   dashmode: 0
   DashKey: 304
   IsDash: 0
@@ -5659,6 +5655,7 @@ MonoBehaviour:
   wallRun: {fileID: 8990926901045167266}
   shotgun: {fileID: 769121578324137058}
   AirBlastExplosionEffect: {fileID: 8323224653308979849}
+  AirBlastEffect: {fileID: 7261918845207872132}
 --- !u!95 &5196926322016537885
 Animator:
   serializedVersion: 7
@@ -6796,8 +6793,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.55, y: 0.1, z: -0.96}
-  m_LocalScale: {x: 4, y: 4, z: 4}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.53, y: 1.53, z: 1.53}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4747785543652121336}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}

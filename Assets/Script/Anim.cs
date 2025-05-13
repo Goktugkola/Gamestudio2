@@ -23,7 +23,8 @@ public class Anim : MonoBehaviour
     [SerializeField] private WallRun wallRun;
     [SerializeField] private Shotgun shotgun;
     [SerializeField] private GameObject AirBlastExplosionEffect;
-    
+    [SerializeField] private GameObject AirBlastEffect;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,22 +35,22 @@ public class Anim : MonoBehaviour
     {
         float velocityMagnitude = rb.linearVelocity.magnitude;
 
-            // Replace "YourSpecificStateName" with the actual name of the animator state
-            // you want this dynamic speed to apply to.
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Run"))
-            {
-                anim.speed = Mathf.Log(velocityMagnitude + 1, 5f); // Adjust speed based on velocity
-            }
-            else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
-            {
-                anim.speed = 5f; // Set a specific speed for the "Dash" state
-            }
-            else
-            {
-                // For any other state that is not "Dash" and not "YourSpecificStateName",
-                // set a default speed (e.g., 1 for normal speed).
-                anim.speed = 1f;
-            }
+        // Replace "YourSpecificStateName" with the actual name of the animator state
+        // you want this dynamic speed to apply to.
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Run"))
+        {
+            anim.speed = Mathf.Log(velocityMagnitude + 1, 5f); // Adjust speed based on velocity
+        }
+        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
+        {
+            anim.speed = 5f; // Set a specific speed for the "Dash" state
+        }
+        else
+        {
+            // For any other state that is not "Dash" and not "YourSpecificStateName",
+            // set a default speed (e.g., 1 for normal speed).
+            anim.speed = 1f;
+        }
         if (playerMovement.State == PlayerMovement.MovementState.Running)
         {
             anim.SetBool("IsGround", true);
@@ -145,6 +146,7 @@ public class Anim : MonoBehaviour
     {
         if (AirBlastExplosionEffect != null)
         {
+            AirBlastEffect.SetActive(false);
             AirBlastExplosionEffect.SetActive(false);
         }
         shotgun.IsAirBlast = false;
@@ -152,10 +154,28 @@ public class Anim : MonoBehaviour
     }
     void disableDash()
     {
+        if (AirBlastExplosionEffect != null)
+        {
+            AirBlastEffect.SetActive(false);
+            AirBlastExplosionEffect.SetActive(false);
+        }
         shotgun.IsDash = false;
         anim.SetBool("IsDash", false);
     }
-
+    void EnableExplosionEffect()
+    {
+        if (AirBlastExplosionEffect != null)
+        {
+            AirBlastExplosionEffect.SetActive(true);
+        }
+    }
+    void EnableAirBlastEffect()
+    {
+        if (AirBlastEffect != null)
+        {
+            AirBlastEffect.SetActive(true);
+        }
+    }
     void playfootstep()
     {
         if (footstepAudioSource != null)
