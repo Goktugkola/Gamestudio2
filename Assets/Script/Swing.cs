@@ -10,7 +10,7 @@ public class Swing : MonoBehaviour
     [SerializeField] private LineRenderer swingLine;
     [SerializeField] Animator Anim;
     private Rigidbody rb;
-    
+
     [Header("Swinging Settings")]
     [SerializeField] private float maxSwingDistance = 25f;
     [SerializeField] private float minSwingDistance = 3f;  // Minimum distance to consider
@@ -42,7 +42,7 @@ public class Swing : MonoBehaviour
     private void Start()
     {
         swingLine.material = new Material(Shader.Find("Sprites/Default"));
-        swingLine.startColor = new Color(1.0f, 0.72f, 0.3f, 1f); 
+        swingLine.startColor = new Color(1.0f, 0.72f, 0.3f, 1f);
         swingLine.endColor = new Color(1.0f, 0.886f, 0.3411765f, 0.8f);
     }
     private void Update()
@@ -89,7 +89,6 @@ public class Swing : MonoBehaviour
     }
     private void StartSwing()
     {
-        Anim.SetBool("IsSwing", true);
         RaycastHit hit;
         bool validSwingPointFound = false;
         Vector3 cameraPos = playerCam.position;
@@ -121,6 +120,7 @@ public class Swing : MonoBehaviour
 
         if (validSwingPointFound)
         {
+            Anim.SetBool("IsSwing", true);
             isSwinging = true;
             swingPoint = hit.point;
             swingObject = hit.collider.gameObject;
@@ -174,7 +174,7 @@ public class Swing : MonoBehaviour
     {
         isSwinging = false;
         playerState = PlayerMovement.MovementState.Swinging;
-        Anim.SetBool("IsSwing",false);
+        Anim.SetBool("IsSwing", false);
         swingLine.positionCount = 0;
         Destroy(swingJoint);
     }

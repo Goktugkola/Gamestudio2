@@ -35,22 +35,11 @@ public class Anim : MonoBehaviour
     {
         float velocityMagnitude = rb.linearVelocity.magnitude;
 
-        // Replace "YourSpecificStateName" with the actual name of the animator state
-        // you want this dynamic speed to apply to.
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Run"))
         {
-            anim.speed = Mathf.Log(velocityMagnitude + 1, 5f); // Adjust speed based on velocity
+            anim.SetFloat("Speed",Mathf.Log(velocityMagnitude + 1, 5f)); // Adjust speed based on velocity
         }
-        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
-        {
-            anim.speed = 5f; // Set a specific speed for the "Dash" state
-        }
-        else
-        {
-            // For any other state that is not "Dash" and not "YourSpecificStateName",
-            // set a default speed (e.g., 1 for normal speed).
-            anim.speed = 1f;
-        }
+
         if (playerMovement.State == PlayerMovement.MovementState.Running)
         {
             anim.SetBool("IsGround", true);
