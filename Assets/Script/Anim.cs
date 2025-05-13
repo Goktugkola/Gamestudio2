@@ -22,6 +22,8 @@ public class Anim : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private WallRun wallRun;
     [SerializeField] private Shotgun shotgun;
+    [SerializeField] private GameObject AirBlastExplosionEffect;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -31,14 +33,23 @@ public class Anim : MonoBehaviour
     void Update()
     {
         float velocityMagnitude = rb.linearVelocity.magnitude;
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
-        {
-            anim.speed = 5;
-        }
-        else
-        {
-            anim.speed = Mathf.Log(velocityMagnitude + 1, 5); // Using logarithm base 2
-        }
+
+            // Replace "YourSpecificStateName" with the actual name of the animator state
+            // you want this dynamic speed to apply to.
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Run"))
+            {
+                anim.speed = Mathf.Log(velocityMagnitude + 1, 5f); // Adjust speed based on velocity
+            }
+            else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
+            {
+                anim.speed = 5f; // Set a specific speed for the "Dash" state
+            }
+            else
+            {
+                // For any other state that is not "Dash" and not "YourSpecificStateName",
+                // set a default speed (e.g., 1 for normal speed).
+                anim.speed = 1f;
+            }
         if (playerMovement.State == PlayerMovement.MovementState.Running)
         {
             anim.SetBool("IsGround", true);
@@ -121,6 +132,7 @@ public class Anim : MonoBehaviour
                 anim.SetBool("IsAirBlast", true);
                 if (airBlastSound != null)
                 {
+                    AirBlastExplosionEffect.SetActive(true);
                     SFXAudioSource.PlayOneShot(airBlastSound);
                     SFXAudioSource.loop = false;
                 }
@@ -131,6 +143,10 @@ public class Anim : MonoBehaviour
     }
     void disableAirBlast()
     {
+        if (AirBlastExplosionEffect != null)
+        {
+            AirBlastExplosionEffect.SetActive(false);
+        }
         shotgun.IsAirBlast = false;
         anim.SetBool("IsAirBlast", false);
     }

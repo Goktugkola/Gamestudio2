@@ -40,9 +40,50 @@ public class WallRun : MonoBehaviour
     {
         defaultwallruntime = wallruntimer;
     }
-    void Update()
+    void FixedUpdate()
     {
         WallRunFunc();
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (playerMovement.State == PlayerMovement.MovementState.WallRunning)
+            {
+                // Wall jump
+                if (lastWallNormal != Vector3.zero) 
+                {
+                    rb.AddForce(lastWallNormal * wallJumpForce * 100);
+                    rb.AddForce(Vector3.up * wallJumpForce * 50);
+                    rb.useGravity = true;
+                    playerMovement.State = PlayerMovement.MovementState.Falling;
+                    canUseCoyoteTime = false; // Disable coyote time after jumping
+                }
+            }
+            else if (canUseCoyoteTime && coyoteTimeTimer > 0)
+            {
+                // Coyote wall jump
+                if (lastWallNormal != Vector3.zero)
+                {
+                    rb.AddForce(lastWallNormal * wallJumpForce * 100);
+                    rb.AddForce(Vector3.up * wallJumpForce * 50);
+                    rb.useGravity = true;
+                    playerMovement.State = PlayerMovement.MovementState.Falling;
+                    canUseCoyoteTime = false; // Disable coyote time after jumping
+                }
+            }
+        }
+
+        // Coyote time countdown should remain in FixedUpdate or be moved here as well.
+        // If moving timer countdown to Update:
+        if (canUseCoyoteTime && coyoteTimeTimer > 0)
+        {
+            coyoteTimeTimer -= Time.deltaTime;
+            if (coyoteTimeTimer <= 0)
+            {
+                canUseCoyoteTime = false; 
+            }
+        }
     }
 
     private void WallRunFunc()
@@ -92,36 +133,8 @@ public class WallRun : MonoBehaviour
             //Wallrun
             wallruntimer = Mathf.Clamp(wallruntimer, 0.001f, defaultwallruntime);
             rb.AddForce(wallRunDirection * wallRunForce * wallruntimer / 6, ForceMode.Force);
+        }
 
-            //Walljump
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                rb.AddForce(directionToWall * wallJumpForce * 100);
-                rb.AddForce(Vector3.up * wallJumpForce * 50);
-                rb.useGravity = true;
-                playerMovement.State = PlayerMovement.MovementState.Falling;
-                canUseCoyoteTime = false; // Disable coyote time after jumping
-            }
-            else if (distanceToWall > 0.5f)
-            {
-                rb.AddForce(-directionToWall * wallRunForce);
-            }
-        }
-        else if (canUseCoyoteTime && coyoteTimeTimer > 0)
-        {
-            print("Coyote time active: " + coyoteTimeTimer);
-            // Allow wall jump during coyote time
-            coyoteTimeTimer -= Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                print("Coyote jump!");
-                rb.AddForce(lastWallNormal * wallJumpForce * 100);
-                rb.AddForce(Vector3.up * wallJumpForce * 50);
-                rb.useGravity = true;
-                playerMovement.State = PlayerMovement.MovementState.Falling;
-                canUseCoyoteTime = false; // Disable coyote time after jumping
-            }
-        }
 
         if (isWallLeft || isWallRight)
         {
