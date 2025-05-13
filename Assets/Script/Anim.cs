@@ -111,8 +111,8 @@ public class Anim : MonoBehaviour
                 SFXAudioSource.loop = false;
                 SFXAudioSource.Stop();
             }
-            anim.SetBool("IsWallLeft", false);
             anim.SetBool("IsWallRight", false);
+            anim.SetBool("IsWallLeft", false);
             anim.SetBool("IsGround", false);
         }
         if (shotgun != null)
@@ -125,11 +125,12 @@ public class Anim : MonoBehaviour
                     SFXAudioSource.PlayOneShot(dashSound);
                     SFXAudioSource.loop = false;
                 }
-                anim.Play("Dash");
+                anim.Play("DashForward");
                 disableDash();
             }
             if (shotgun.IsAirBlast)
             {
+                print("AirBlast");
                 anim.SetBool("IsAirBlast", true);
                 if (airBlastSound != null)
                 {

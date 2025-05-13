@@ -101,7 +101,8 @@ public class Shotgun : MonoBehaviour
         {
             if (currentBulletCount < maxBulletCount)
             {
-                Anim.Play("Reload");
+                Anim.SetBool("Reload", true);
+                Anim.SetBool("IsDash", true);
             }
             currentBulletCount = maxBulletCount;
         }
@@ -164,10 +165,10 @@ public class Shotgun : MonoBehaviour
     }
     public void Dash()
     {
-
+        IsDash = true;
         if (playerMovement.State != PlayerMovement.MovementState.Running)
         {
-            IsDash = true;
+            
             float velmagnitude = playerRb.linearVelocity.magnitude;
             playerRb.linearVelocity = new Vector3(0, 0, 0);
             playerRb.AddForce(playerCamera.transform.forward * (knockbackForce + velmagnitude), ForceMode.Impulse);
