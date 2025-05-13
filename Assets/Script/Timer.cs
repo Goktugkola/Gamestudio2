@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
@@ -8,30 +7,53 @@ public class Timer : MonoBehaviour
     [SerializeField] bool isRunning = false;
     [SerializeField] TextMeshProUGUI timerText; // Optional: Assign in Inspector
     private float referenceTime;
-    private bool wasRunningOnDisable = false; // New field to track state
+    private bool wasRunningOnDisable = false;
 
-    // Public properties to access the current time components
+    // New field to track Time.timeScale of the previous frame
+    private float previousTimeScale = 1f;
+
     public int Hours { get; private set; }
     public int Minutes { get; private set; }
     public int Seconds { get; private set; }
-    public int Milliseconds { get; private set; }
 
-    // Optional: Assign a TextMeshProUGUI component in the Inspector to display the timer
-    // public TextMeshProUGUI timerTextDisplay;
+    void Awake()
+    {
+        // Initialize previousTimeScale to the current Time.timeScale
+        previousTimeScale = Time.timeScale;
+
+        // If isRunning is true (e.g., set in Inspector for auto-start),
+        // initialize referenceTime correctly.
+        if (isRunning)
+        {
+            referenceTime = Time.realtimeSinceStartup - elapsedTime;
+        }
+    }
 
     void Update()
     {
-        if (isRunning)
+        // If the timer should be running AND the game just unpaused
+        if (isRunning && Time.timeScale > 0f && previousTimeScale == 0f)
+        {
+            // Adjust referenceTime to seamlessly resume from the paused elapsedTime
+            referenceTime = Time.realtimeSinceStartup - elapsedTime;
+        }
+
+        // Only accumulate time if the timer is running AND the game is not paused
+        if (isRunning && Time.timeScale > 0f)
         {
             elapsedTime = Time.realtimeSinceStartup - referenceTime;
         }
+        // If isRunning is false or Time.timeScale is 0, elapsedTime effectively pauses.
+
         UpdateTimerDisplayValues();
-        timerText.text = GetFormattedTime();// Debug output to console
-        // Example of updating a TextMeshProUGUI element:
-        // if (timerTextDisplay != null)
-        // {
-        //     timerTextDisplay.text = GetFormattedTime();
-        // }
+
+        if (timerText != null) // Check if timerText is assigned
+        {
+            timerText.text = GetFormattedTime();
+        }
+        
+        // Store the current Time.timeScale for the next frame
+        previousTimeScale = Time.timeScale;
     }
 
     private void UpdateTimerDisplayValues()
@@ -39,12 +61,8 @@ public class Timer : MonoBehaviour
         Hours = (int)(elapsedTime / 3600f);
         Minutes = (int)((elapsedTime % 3600f) / 60f);
         Seconds = (int)(elapsedTime % 60f);
-        Milliseconds = (int)((elapsedTime * 1000f) % 1000f);
     }
 
-    /// <summary>
-    /// Starts or resumes the timer.
-    /// </summary>
     public void StartTimer()
     {
         if (!isRunning)
@@ -52,18 +70,22 @@ public class Timer : MonoBehaviour
             isRunning = true;
             // Adjust referenceTime to account for already elapsed time if resuming
             referenceTime = Time.realtimeSinceStartup - elapsedTime;
+            // Ensure previousTimeScale is current, in case StartTimer is called while paused
+            previousTimeScale = Time.timeScale;
         }
     }
 
-    /// <summary>
-    /// Stops or pauses the timer.
-    /// </summary>
     public void StopTimer()
     {
         if (isRunning)
         {
+            // If stopping while game is not paused by timescale, update elapsedTime one last time.
+            // If game is paused by timescale (Time.timeScale == 0), elapsedTime is already frozen correctly.
+            if (Time.timeScale > 0f)
+            {
+                elapsedTime = Time.realtimeSinceStartup - referenceTime;
+            }
             isRunning = false;
-            // elapsedTime is already up-to-date from the Update loop
         }
     }
 
@@ -71,60 +93,58 @@ public class Timer : MonoBehaviour
     {
         if (isRunning)
         {
-            // Update elapsedTime one last time before "pausing"
-            elapsedTime = Time.realtimeSinceStartup - referenceTime;
+            // Update elapsedTime one last time before "pausing",
+            // but only if the game isn't already paused by Time.timeScale.
+            if (Time.timeScale > 0f)
+            {
+                elapsedTime = Time.realtimeSinceStartup - referenceTime;
+            }
             wasRunningOnDisable = true;
-            isRunning = false; // Effectively pauses the timer logic in Update
+            isRunning = false; // Stop the timer logic as the component is disabled
         }
     }
 
     void OnEnable()
     {
+        // Initialize previousTimeScale with the current Time.timeScale
+        // This ensures correct behavior in the first Update after enabling.
+        previousTimeScale = Time.timeScale;
+
         if (wasRunningOnDisable)
         {
-            // To resume, we need to recalculate referenceTime based on the
-            // elapsedTime when disabled and the new Time.realtimeSinceStartup
+            // Restore the timer's state from before it was disabled.
+            // elapsedTime already holds the correct value.
+            // referenceTime needs to be set as if we are resuming.
             referenceTime = Time.realtimeSinceStartup - elapsedTime;
-            isRunning = true;
-            wasRunningOnDisable = false;
+            isRunning = true; // Now, mark it as running.
+            wasRunningOnDisable = false; // Clear the flag.
         }
     }
 
-    /// <summary>
-    /// Resets the timer to zero.
-    /// </summary>
     public void ResetTimer()
     {
         isRunning = false;
         elapsedTime = 0f;
-        // referenceTime will be correctly set if StartTimer is called next
+        referenceTime = Time.realtimeSinceStartup; // Reset reference time for a clean start if started again
         UpdateTimerDisplayValues(); // Update display values to zero
+        if (timerText != null) // Also update text on reset
+        {
+            timerText.text = GetFormattedTime();
+        }
     }
 
-    /// <summary>
-    /// Gets the current elapsed time as a formatted string (HH:MM:SS.mmm).
-    /// </summary>
-    /// <returns>Formatted time string.</returns>
     public string GetFormattedTime()
     {
-        return $"{Hours:00}:{Minutes:00}:{Seconds:00}.{Milliseconds:000}";
+        return $"{Hours:00}:{Minutes:00}:{Seconds:00}";
     }
 
-    /// <summary>
-    /// Gets the raw elapsed time in seconds.
-    /// </summary>
-    /// <returns>Elapsed time in seconds.</returns>
     public float GetElapsedTimeInSeconds()
     {
         return elapsedTime;
     }
 
-    /// <summary>
-    /// Checks if the timer is currently running.
-    /// </summary>
-    /// <returns>True if the timer is running, false otherwise.</returns>
     public bool IsRunning()
     {
-        return isRunning;
+        return isRunning; // This now reflects user's intent, actual running depends on Time.timeScale too
     }
 }
