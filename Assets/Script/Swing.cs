@@ -8,6 +8,7 @@ public class Swing : MonoBehaviour
     [SerializeField] private Transform orientation;
     [SerializeField] private Transform gunTip;
     [SerializeField] private LineRenderer swingLine;
+    [SerializeField] Animator Anim;
     private Rigidbody rb;
     
     [Header("Swinging Settings")]
@@ -88,6 +89,7 @@ public class Swing : MonoBehaviour
     }
     private void StartSwing()
     {
+        Anim.SetBool("IsSwing", true);
         RaycastHit hit;
         bool validSwingPointFound = false;
         Vector3 cameraPos = playerCam.position;
@@ -172,7 +174,7 @@ public class Swing : MonoBehaviour
     {
         isSwinging = false;
         playerState = PlayerMovement.MovementState.Swinging;
-
+        Anim.SetBool("IsSwing",false);
         swingLine.positionCount = 0;
         Destroy(swingJoint);
     }
