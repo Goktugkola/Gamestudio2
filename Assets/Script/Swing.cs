@@ -23,18 +23,26 @@ public class Swing : MonoBehaviour
     [SerializeField] private LayerMask swingMask;
     [SerializeField] private float extendCableSpeed = 0.5f;
     [SerializeField] private float grappleMultiplier = 20f;
+
     private PlayerMovement.MovementState playerState;
     private bool isSwinging;
     private SpringJoint swingJoint;
     private Vector3 swingPoint;
     private GameObject swingObject;
     public int currentWeaponid = 0;
+
     private void Awake()
     {
-
         swingLine.positionCount = 0;
         rb = player.GetComponent<Rigidbody>();
         playerState = player.GetComponent<PlayerMovement>().State;
+    }
+
+    private void Start()
+    {
+        swingLine.material = new Material(Shader.Find("Sprites/Default"));
+        swingLine.startColor = new Color(1.0f, 0.72f, 0.3f, 0.8f); 
+        swingLine.endColor = new Color(1.0f, 0.886f, 0.3411765f, 0.4f);
     }
     private void Update()
     {
