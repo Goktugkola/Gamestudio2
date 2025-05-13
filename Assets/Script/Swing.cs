@@ -41,8 +41,8 @@ public class Swing : MonoBehaviour
     private void Start()
     {
         swingLine.material = new Material(Shader.Find("Sprites/Default"));
-        swingLine.startColor = new Color(1.0f, 0.72f, 0.3f, 0.8f); 
-        swingLine.endColor = new Color(1.0f, 0.886f, 0.3411765f, 0.4f);
+        swingLine.startColor = new Color(1.0f, 0.72f, 0.3f, 1f); 
+        swingLine.endColor = new Color(1.0f, 0.886f, 0.3411765f, 0.8f);
     }
     private void Update()
     {
