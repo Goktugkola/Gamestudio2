@@ -6148,7 +6148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
   SFXAudioSource: {fileID: 5431026300788379353}
-  dashSound: {fileID: 8300000, guid: a842a195e078e2143a95aab4de06f83b, type: 3}
+  dashSound: {fileID: 8300000, guid: cc67ec0b2426164409d6650e9773bdc4, type: 3}
   airBlastSound: {fileID: 8300000, guid: 79efc0c313d175a459c7676eb6c47135, type: 3}
   wallRunSound: {fileID: 8300000, guid: d1909ead6c494be4297fd3b6e4ab4277, type: 3}
   footstepSoundsWood:
