@@ -167,9 +167,9 @@ public class PlayerMovement : MonoBehaviour
             jumping = false;
         }
         else
+        {
             jumping = Input.GetButton("Jump");
-        crouching = Input.GetKey(KeyCode.LeftControl);
-
+        }
         if (Input.GetKeyDown(KeyCode.LeftAlt) && !shiftTogglePressed && canShiftToggle)
         {
             shiftTogglePressed = true;
@@ -181,9 +181,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Crouching
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl) && State != MovementState.FirstSection)
             StartCrouch();
-        if (Input.GetKeyUp(KeyCode.LeftControl))
+        if (Input.GetKeyUp(KeyCode.LeftControl) && State != MovementState.FirstSection)
             StopCrouch();
     }
 
