@@ -9,7 +9,7 @@ public class StartGame : MonoBehaviour
     [SerializeField] private String SceneTo;
     void Start()
     {
-        
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
