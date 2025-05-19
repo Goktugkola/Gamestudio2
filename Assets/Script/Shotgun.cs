@@ -185,9 +185,7 @@ public class Shotgun : MonoBehaviour
         if (playerRb != null)
         {
             IsAirBlast = true;
-            float velmagnitude = playerRb.linearVelocity.magnitude;
-            playerRb.linearVelocity = new Vector3(0, 0, 0);
-            playerRb.AddForce(-direction * (knockbackForce + velmagnitude), ForceMode.Impulse);
+            playerRb.AddForce(-direction * knockbackForce, ForceMode.Impulse);
         }
         // Optimization: Use SphereCastNonAlloc to avoid garbage allocation
         int hitCount = Physics.SphereCastNonAlloc(
