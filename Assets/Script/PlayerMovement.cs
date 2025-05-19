@@ -107,8 +107,7 @@ public class PlayerMovement : MonoBehaviour
         // If currently mantling, let LedgeJump handle the state exclusively
         if (State == MovementState.Mantling)
         {
-            // Optionally, you could add logic here specific to when the player is mantling,
-            // but for now, just returning prevents FixedUpdate from overriding the state.
+
             return; 
         }
 
@@ -147,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
             State = MovementState.Running;
         }
         // Ensure this condition doesn't conflict if Mantling state is handled above
-        if (!grounded && !Input.GetMouseButton(0) && !Input.GetMouseButton(1) && !dashing && State != MovementState.WallRunning && State != MovementState.Mantling) // Added Mantling check
+        if (!grounded && !Input.GetMouseButton(0) && !Input.GetMouseButton(1) && !dashing && State != MovementState.WallRunning && State != MovementState.Mantling) 
         {
             State = MovementState.Falling;
         }
@@ -377,15 +376,20 @@ public class PlayerMovement : MonoBehaviour
         if (grounded && Physics.Raycast(groundCheck.position, Vector3.down,
             out RaycastHit hit, groundCheckDistance))
         {
-            currentSurface = hit.collider.tag switch
+
+            grounded = IsFloor(hit.normal);
+            normalVector = hit.normal;
+        }
+        if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit surfacehit, groundCheckDistance+2f))
+        {
+            print("Surface Hit: " + surfacehit.collider.tag);
+            currentSurface = surfacehit.collider.tag switch
             {
                 "Grass" => SurfaceType.Grass,
                 "Stone" => SurfaceType.Stone,
                 "Wood" => SurfaceType.Wood,
-                _ => SurfaceType.Grass, // Default
+                _ => SurfaceType.Stone, // Default
             };
-            grounded = IsFloor(hit.normal);
-            normalVector = hit.normal;
         }
     }
 }
