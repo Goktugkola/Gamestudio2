@@ -6756,9 +6756,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerObject: {fileID: 5967847233439821266}
-  orientation: {fileID: 3048916713816069600}
-  positionMultiplierH: 0.65
-  positionMultiplierV: 0.85
   jumpForce: 12
   ledgeDistance: 1.5
   ledgeCollider: {fileID: 1894273239895547579}
@@ -6766,11 +6763,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 65
   playerMovement: {fileID: 822055989977776824}
-  mantleDuration: 1
-  mantleEndUpwardBoost: 2
-  playerOffsetFromWall: 0.5
-  playerHeightAboveLedge: 1
   playerCollider: {fileID: 7036113539517353607}
+  playerOrientation: {fileID: 3048916713816069600}
 --- !u!54 &5981059779052805473
 Rigidbody:
   m_ObjectHideFlags: 0
