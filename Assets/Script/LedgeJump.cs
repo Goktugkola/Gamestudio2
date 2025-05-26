@@ -65,8 +65,7 @@ public class LedgeJump : MonoBehaviour
         playerMovement.State = PlayerMovement.MovementState.Falling;
         playerRigidbody.useGravity = true;
         StopAllCoroutines();
-        // Ensure cooldown is reset if player exits the trigger area
-        isLedgeJumpOnCooldown = false; 
+
 
     }
     private System.Collections.IEnumerator PerformJump(Collider other, Vector3 direction, float mag)
