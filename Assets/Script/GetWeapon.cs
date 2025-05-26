@@ -6,15 +6,16 @@ public class GetWeapon : MonoBehaviour
     public GameObject text;
     [SerializeField] float speed;
     [SerializeField] GameObject Weapon;
-    [SerializeField] WallRun wallRun;
+    [SerializeField] GameObject playerObject;
     private void OnTriggerEnter(Collider other)
     {
         text.SetActive(true);
         text.GetComponent<Animator>().speed = speed;
         if(Weapon != null)
         Weapon.SetActive(true);
-        if(wallRun !=null)
-        wallRun.enabled = true;
+        if(playerObject !=null)
+        playerObject.GetComponent<WallRun>().enabled = true;
+        playerObject.GetComponent<PlayerMovement>().canShiftToggle = true;
         Destroy(gameObject, 0.2f);
     }
 }

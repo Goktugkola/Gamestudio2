@@ -8,15 +8,14 @@ public class LedgeJump : MonoBehaviour
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float ledgeDistance = 1.5f;
     [SerializeField] private Collider ledgeCollider;
-    [SerializeField] private LayerMask ledgeLayer = 6; // Use LayerMask for better readability
-
+    [SerializeField] private float ledgeJumpCooldownDuration = 1.0f;
+    [SerializeField] private float ledgeJumpDuration = 0.5f;
     private Rigidbody playerRigidbody;
     private Transform playerTransform;
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private Collider playerCollider;
     [SerializeField] private Transform playerOrientation;
-
-
+    private bool isLedgeJumpOnCooldown = false;
 
     void Awake()
     {
@@ -42,6 +41,9 @@ public class LedgeJump : MonoBehaviour
         // Check if the player Rigidbody is cached
         if (playerRigidbody == null) return;
 
+        // Prevent new ledge jump attempts if on cooldown
+        if (isLedgeJumpOnCooldown) return;
+
         // Use LayerMask for comparison
         if (other.GetComponent<LedgeJumpObject>() != null)
         {
@@ -58,15 +60,37 @@ public class LedgeJump : MonoBehaviour
             }
         }
     }
+    private void OnTriggerExit(Collider other)
+    {
+        playerMovement.State = PlayerMovement.MovementState.Falling;
+        playerRigidbody.useGravity = true;
+        StopAllCoroutines();
+        // Ensure cooldown is reset if player exits the trigger area
+        isLedgeJumpOnCooldown = false; 
+
+    }
     private System.Collections.IEnumerator PerformJump(Collider other, Vector3 direction, float mag)
     {
-        
+        // Set cooldown flag and start the cooldown timer
+        isLedgeJumpOnCooldown = true;
+        StartCoroutine(ResetLedgeJumpCooldown());
+
+        // Apply initial jump forces
         playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        playerRigidbody.useGravity = false;
-        yield return new WaitUntil(() => playerCollider.bounds.min.y > other.bounds.max.y);
         playerRigidbody.AddForce(direction * mag, ForceMode.Impulse);
+        playerRigidbody.useGravity = false;
+        
+        // Wait until player clears the ledge
+        yield return new WaitForSecondsRealtime(ledgeJumpDuration);
+        // Reset player state and gravity
         playerRigidbody.useGravity = true;
         playerMovement.State = PlayerMovement.MovementState.Falling;
+    }
+
+    private System.Collections.IEnumerator ResetLedgeJumpCooldown()
+    {
+        yield return new WaitForSeconds(ledgeJumpCooldownDuration);
+        isLedgeJumpOnCooldown = false;
     }
 
 
