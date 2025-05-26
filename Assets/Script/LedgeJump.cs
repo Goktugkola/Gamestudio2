@@ -15,7 +15,7 @@ public class LedgeJump : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private Collider playerCollider;
     [SerializeField] private Transform playerOrientation;
-    private bool isLedgeJumpOnCooldown = false;
+    [SerializeField] bool isLedgeJumpOnCooldown = false;
 
     void Awake()
     {
@@ -64,7 +64,8 @@ public class LedgeJump : MonoBehaviour
     {
         playerMovement.State = PlayerMovement.MovementState.Falling;
         playerRigidbody.useGravity = true;
-        StopAllCoroutines();
+        StopCoroutine(PerformJump(other, Vector3.zero, 0f));
+        
 
 
     }
