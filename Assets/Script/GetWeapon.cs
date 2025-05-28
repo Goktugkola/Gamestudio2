@@ -13,9 +13,11 @@ public class GetWeapon : MonoBehaviour
         text.GetComponent<Animator>().speed = speed;
         if(Weapon != null)
         Weapon.SetActive(true);
-        if(playerObject !=null)
-        playerObject.GetComponent<WallRun>().enabled = true;
-        playerObject.GetComponent<PlayerMovement>().canShiftToggle = true;
-        Destroy(gameObject, 0.2f);
-    }
+        if (playerObject != null)
+        {
+            playerObject.GetComponent<WallRun>().enabled = true;
+            playerObject.GetComponent<PlayerMovement>().canShiftToggle = true;
+            }
+            Destroy(gameObject, 0.2f);
+        }
 }
