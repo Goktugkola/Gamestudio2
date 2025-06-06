@@ -21,7 +21,7 @@
 
 ## Description
 
-Somnia is a fast-paced 3D platformer that rewards mastery of movement. You’ll navigate custom levels, chain together swings, air blasts, wallruns, and dashes to overcome obstacles and reach the goal. Extra movement features like coyote time, air strafing, slide, and bunny hop mechanics ensure that every run feels responsive and dynamic.
+Somnia is a fast-paced 3D platformer that rewards mastery of movement. Chain together swings, air blasts, wallruns, dashes and reach the goal. Extra movement features like coyote time, air strafing, slide, and bunny hop mechanics ensure that movement feels responsive and dynamic.
 
 ---
 
