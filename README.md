@@ -25,6 +25,17 @@ Somnia is a fast-paced 3D platformer that rewards mastery of movement. You’ll 
 
 ---
 
+## Media
+![Screenshot 1 Description](Assets/Resources/Picture1.png)
+![Screenshot 1 Description](Assets/Resources/Picture2.png)
+![Screenshot 1 Description](Assets/Resources/Picture3.png)
+
+### Video Demo
+
+https://www.youtube.com/watch?v=1-3QZizhhnA
+
+---
+
 ## Features
 
 - **Swing**: Attach to nearby grapple points and swing across chasms.  
@@ -103,13 +114,5 @@ Somnia is a fast-paced 3D platformer that rewards mastery of movement. You’ll 
 
 ---
 
----
 
-## Media
-![Screenshot 1 Description](Assets/Resources/Picture1.png)
-![Screenshot 1 Description](Assets/Resources/Picture2.png)
-![Screenshot 1 Description](Assets/Resources/Picture3.png)
 
-### Video Demo
-
-https://www.youtube.com/watch?v=1-3QZizhhnA
