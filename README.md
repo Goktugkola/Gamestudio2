@@ -12,8 +12,6 @@
    - [Controls](#controls)  
    - [Mechanics Overview](#mechanics-overview)
 6. [Media](#Media)  
-7. [Contributing](#contributing)  
-8. [Contact](#contact)  
 
 ---
 
