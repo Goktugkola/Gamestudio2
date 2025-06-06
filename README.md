@@ -10,10 +10,8 @@
 2. [Features](#features)  
 3. [How to Play](#how-to-play)  
    - [Controls](#controls)  
-   - [Mechanics Overview](#mechanics-overview)  
-4. [Installation & Requirements](#installation--requirements)  
-5. [Project Structure](#project-structure)  
-6. [Screenshots](#screenshots)  
+   - [Mechanics Overview](#mechanics-overview)
+6. [Media](#Media)  
 7. [Contributing](#contributing)  
 8. [Contact](#contact)  
 
